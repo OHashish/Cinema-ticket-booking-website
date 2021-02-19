@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='mainpage.css') }}">
+
+  </head>
+  <body>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script type=text/javascript src="{{url_for('static', filename='jquery.js') }}"></script>
+    
+  </body>
+
+  <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <a class="navbar-brand mr-4" href="/home">Cinema</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <ul class="navbar-nav nav-fill w-100">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto nv">
+        {% if current_user.is_authenticated %}
+
+        {% endif %}
+      </ul>
+      <div class="navbar-nav ml-auto nv">
+        {% if current_user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link" href="/logout">Logout<span class="sr-only">(current)</span></a></li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link" href="/signup">Sign up<span class="sr-only">(current)</span></a></li>
+        <li class="nav-item"><a class="nav-link" href="/login">Login<span class="sr-only">(current)</span></a></li>
+        {% endif %}
+
+      </div>
+    </div>
+  </ul>
+  </nav>
+<div class="container">
+    
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+       
+{% block content %}
+{% endblock %}
+</div>
+
+</html>

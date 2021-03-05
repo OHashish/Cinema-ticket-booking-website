@@ -24,6 +24,7 @@ Flask-Uploads==0.2.1
 Flask-WhooshAlchemy==0.56
 Flask-WTF==0.14.3
 idna==3.0
+imdbpy
 itsdangerous==1.1.0
 Jinja2==2.11.2
 Mako==1.1.3

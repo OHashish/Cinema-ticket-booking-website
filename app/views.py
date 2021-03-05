@@ -3,12 +3,17 @@ from app import app, db, admin,bcrypt
 from .forms import LoginForm , RegisterForm
 from datetime import datetime
 from flask_admin.contrib.sqla import ModelView
-from .models import User
+from .models import User,Screen,Ticket,Movie,Seat
 from flask_wtf import FlaskForm
 from flask_login import LoginManager,UserMixin,login_user,login_required,logout_user,current_user
 
 
 admin.add_view(ModelView(User,db.session))
+admin.add_view(ModelView(Screen,db.session))
+admin.add_view(ModelView(Ticket,db.session))
+admin.add_view(ModelView(Seat,db.session))
+admin.add_view(ModelView(Movie,db.session))
+
 
 
 

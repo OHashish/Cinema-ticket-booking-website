@@ -4,15 +4,50 @@ from .forms import LoginForm , RegisterForm
 from datetime import datetime
 from flask_admin.contrib.sqla import ModelView
 from .models import User,Screen,Ticket,Movie,Seat
+from flask_admin import BaseView, expose
 from flask_wtf import FlaskForm
 from flask_login import LoginManager,UserMixin,login_user,login_required,logout_user,current_user
+from imdb import IMDb
 
+#View model to add IMDB film details into the movies database.
+class UserView(ModelView):
 
+	@expose('/new/', methods=('GET', 'POST'))
+	def create_view(self):
+		ia = IMDb()
+		if request.method == 'POST':
+
+			title = request.form['title']
+			movie= ia.search_movie(title)[0]
+			ia.update(movie, info = ['main','plot'])
+			blurb=str(movie['plot outline'])
+
+			#Finding UK certificate and striping for age only 
+			for certificate in movie['certificates']:
+				if 'United Kingdom' in certificate:
+					certificate = certificate[15:]
+					break
+
+			runtime = int(movie['runtime'][0])
+
+			new_movie = Movie(title=title,blurb=blurb,certificate=certificate,
+							runtime=runtime)
+			db.session.add(new_movie)
+			db.session.commit()
+
+			return redirect('/admin/movie')
+		else:
+			return self.render('admin/movie_index.html')
+		
+		
+		
+
+#Create all admin Views
 admin.add_view(ModelView(User,db.session))
 admin.add_view(ModelView(Screen,db.session))
 admin.add_view(ModelView(Ticket,db.session))
 admin.add_view(ModelView(Seat,db.session))
-admin.add_view(ModelView(Movie,db.session))
+admin.add_view(UserView(Movie,db.session))
 
 
 

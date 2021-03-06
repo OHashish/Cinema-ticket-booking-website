@@ -1,0 +1,11 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+{{ super() }}
+
+<form method = "POST">
+    Input film title:
+    <p><input type = "text" name = "title" /></p>
+    <p><input type = "submit" value = "submit" on /></p>
+</form>
+
+{% endblock %}

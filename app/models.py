@@ -30,9 +30,9 @@ class Seat(db.Model):
 class Movie(db.Model):
     id =db.Column(db.Integer,primary_key=True)
     title=db.Column(db.String(80))
-    blurb =db.Column(db.String(500))
+    blurb =db.Column(db.String(1000))
     certificate =db.Column(db.String(20))
-    runtime =db.Column(db.DateTime)
+    runtime =db.Column(db.Integer)
     screen_id=db.Column(db.Integer,db.ForeignKey('screen.id'))
     
     

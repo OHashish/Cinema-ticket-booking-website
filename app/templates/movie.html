@@ -1,1 +1,16 @@
 {%extends "base.html"%}
+{% block content %}
+{{super()}}
+
+<div class="Titleinfo">
+    <h1>{{title}}</h1>
+    <h3><i>({{year}})</i></h3><p2>{{runtime}}mins</p2>
+</div>
+<div class="Detail">
+    <img src="{{poster}}" alt="Movie Poster" width="200px" height="300px"
+            object-fit="fill">
+
+    <h4>Director: <i>{{director}}</i></h4> 
+</div>
+
+{% endblock content %}

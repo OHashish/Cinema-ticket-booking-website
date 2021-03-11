@@ -30,6 +30,7 @@ class Seat(db.Model):
 class Movie(db.Model):
     id =db.Column(db.Integer,primary_key=True)
     title=db.Column(db.String(80))
+    year =db.Column(db.Integer)
     blurb =db.Column(db.String(1000))
     director =db.Column(db.String(80))
     certificate =db.Column(db.String(20))

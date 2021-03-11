@@ -18,9 +18,16 @@ class UserView(ModelView):
 		if request.method == 'POST':
 
 			title = request.form['title']
+			if len(ia.search_movie(title)) == 0:
+				return redirect('/admin/movie')
+
 			movie= ia.search_movie(title)[0]
+
 			ia.update(movie, info = ['main','plot'])
+			title=str(movie['title'])
 			blurb=str(movie['plot outline'])
+			year=int(movie['year'])
+			
 
 			#Finding UK certificate and striping for age only 
 			for certificate in movie['certificates']:
@@ -38,7 +45,7 @@ class UserView(ModelView):
 
 			new_movie = Movie(title=title,blurb=blurb,certificate=certificate,
 							runtime=runtime,director=director,
-							movie_poster=movie_poster)
+							movie_poster=movie_poster, year=year)
 			db.session.add(new_movie)
 			db.session.commit()
 
@@ -119,6 +126,25 @@ def signup():
 def logout():
 	logout_user()
 	return redirect(url_for("login"))
+
+@app.route('/movie/<int:movie_id>')
+def movie_detail(movie_id):
+
+	movie = Movie.query.filter_by(id=movie_id).first()
+
+	# Redirection to homepage when movie not found
+	if movie is None:
+		flash("The movie you were trying to find isn't being shown right now")
+		return redirect(url_for('home'))
+
+
+	return render_template('movie.html',
+	title=movie.title,
+	year=movie.year,
+	poster=movie.movie_poster,
+	director=movie.director,
+	runtime=movie.runtime)
+
 
 if __name__=='__main__':
 	app.run(debug=True)

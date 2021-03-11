@@ -28,10 +28,17 @@ class UserView(ModelView):
 					certificate = certificate[15:]
 					break
 
+			#Formatting director name correctly
+			for director in movie['director']:
+				director = director['name']
+				break
+
+			movie_poster = movie['cover url']
 			runtime = int(movie['runtime'][0])
 
 			new_movie = Movie(title=title,blurb=blurb,certificate=certificate,
-							runtime=runtime)
+							runtime=runtime,director=director,
+							movie_poster=movie_poster)
 			db.session.add(new_movie)
 			db.session.commit()
 

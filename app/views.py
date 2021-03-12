@@ -148,6 +148,11 @@ def movie_detail(movie_id):
 	if movie is None:
 		flash("The movie you were trying to find isn't being shown right now")
 		return redirect(url_for('home'))
+	
+	if movie.screen is None:
+		screen = "None"
+	else:
+		screen =  "Screen " + str(movie.screen.id)
 
 	# Passing movie details to template
 	return render_template('movie.html',
@@ -160,7 +165,7 @@ def movie_detail(movie_id):
 	certificate=movie.certificate,
 	runtime=movie.runtime,
 	blurb=movie.blurb,
-	screen=movie.screen)
+	screen=screen)
 
 #To be routed to booking page for a screening
 @app.route('/book/<int:movie_id>',methods=['GET','POST'])

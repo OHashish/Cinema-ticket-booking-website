@@ -1,1 +1,75 @@
 {%extends "base.html"%}
+{% block content %}
+{{super()}}
+<header>
+    <div class="Titleinfo">
+        <h1>{{title}}  <i><span style="font-size:50%">({{year}})</span></i></h1>
+    </div>
+</header>
+<main>
+    <div id="poster">
+        <img align="left" style="padding-right:20px;" src="{{poster}}" 
+        alt="Movie Poster" width="200px" height="300px"object-fit="fill">
+    </div>
+    <dl>
+        <dt>
+            <div id=director style="padding-top:50px;">
+                <h3 style="font-size: 125%;">
+                    <span style="font-weight:bold">Director:&nbsp</span>
+                    <i>{{director}}</i>
+                </h3> 
+            </div>
+        </dt>
+        <dt>
+            <div id=cast>
+                <h3 style="font-size: 125%;">
+                    <span style="font-weight:bold">Cast Members:&nbsp</span>
+                    <i>{{cast}}</i>
+                </h3> 
+            </div>
+        </dt>
+        <dt>
+            <div id=certificate>
+                <h3 style="font-size: 125%;">
+                    <span style="font-weight:bold">Certificate:&nbsp</span>
+                    <i>{{certificate}}</i>
+                </h3> 
+            </div>
+        </dt>
+        <dt>
+            <div id=runtime>
+                <h3 style="font-size: 125%;">
+                    <span style="font-weight:bold">Runtime:&nbsp</span>
+                    <i>{{runtime}}&nbspmins</i>
+                </h3> 
+            </div>
+        </dt>
+        <dt>
+            <div id=screen>
+                <h3 style="font-size: 125%;">
+                    <span style="font-weight:bold">Showing on screen:&nbsp</span>
+                    <i>{{screen}}</i>
+                </h3> 
+            </div>
+        </dt>
+        <dt>
+            <div id=booking>
+                <form action="/book/{{id}}" method="POST">
+                    <button name="book_button" type="submit" value="book">
+                        Book a screening</button>
+                </form>
+            </div>
+        </dt>
+    </dl>
+
+
+    <div id=description style="padding-top:100px;">
+        <h3 style="font-size: 125%;">
+            <span style="font-weight:bold">Synopsis:&nbsp</span>
+            <i>{{blurb}}&nbsp</i>
+        </h3> 
+    </div>
+
+</main>
+
+{% endblock content %}

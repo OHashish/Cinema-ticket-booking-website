@@ -27,8 +27,6 @@ class UserView(ModelView):
 			title=str(movie['title'])
 			blurb=str(movie['plot outline'])
 			year=int(movie['year'])
-			
-			print(movie.infoset2keys)
 
 			#Finding UK certificate and striping for age only 
 			for certificate in movie['certificates']:

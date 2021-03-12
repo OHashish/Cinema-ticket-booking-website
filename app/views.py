@@ -145,7 +145,9 @@ def movie_detail(movie_id):
 	year=movie.year,
 	poster=movie.movie_poster,
 	director=movie.director,
-	runtime=movie.runtime)
+	certificate=movie.certificate,
+	runtime=movie.runtime,
+	blurb=movie.blurb)
 
 
 if __name__=='__main__':

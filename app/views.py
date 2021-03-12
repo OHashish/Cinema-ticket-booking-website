@@ -32,7 +32,9 @@ class UserView(ModelView):
 			#Finding UK certificate and striping for age only 
 			for certificate in movie['certificates']:
 				if 'United Kingdom' in certificate:
-					certificate = certificate[15:]
+					print(certificate)
+					certificate = certificate.split(":")
+					certificate = certificate[1]
 					break
 
 			#Formatting director name correctly
@@ -137,7 +139,7 @@ def movie_detail(movie_id):
 		flash("The movie you were trying to find isn't being shown right now")
 		return redirect(url_for('home'))
 
-
+	# Passing movie details to template
 	return render_template('movie.html',
 	title=movie.title,
 	year=movie.year,

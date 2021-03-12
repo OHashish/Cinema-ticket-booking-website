@@ -147,7 +147,8 @@ def movie_detail(movie_id):
 	director=movie.director,
 	certificate=movie.certificate,
 	runtime=movie.runtime,
-	blurb=movie.blurb)
+	blurb=movie.blurb,
+	screen=movie.screen)
 
 
 if __name__=='__main__':

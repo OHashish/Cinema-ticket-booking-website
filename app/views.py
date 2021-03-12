@@ -28,13 +28,23 @@ class UserView(ModelView):
 			blurb=str(movie['plot outline'])
 			year=int(movie['year'])
 			
+			print(movie.infoset2keys)
 
 			#Finding UK certificate and striping for age only 
 			for certificate in movie['certificates']:
 				if 'United Kingdom' in certificate:
-					print(certificate)
 					certificate = certificate.split(":")
 					certificate = certificate[1]
+					break
+
+			#Getting first 5 actors for main actors
+			actors = ""
+			num = 0
+			for actor in movie['cast']:
+				actors += actor['name'] + ", "
+				num += 1
+				if num >= 4:
+					actors = actors[:-2]
 					break
 
 			#Formatting director name correctly
@@ -47,7 +57,7 @@ class UserView(ModelView):
 
 			new_movie = Movie(title=title,blurb=blurb,certificate=certificate,
 							runtime=runtime,director=director,
-							movie_poster=movie_poster, year=year)
+							movie_poster=movie_poster, year=year, cast=actors)
 			db.session.add(new_movie)
 			db.session.commit()
 
@@ -129,7 +139,7 @@ def logout():
 	logout_user()
 	return redirect(url_for("login"))
 
-@app.route('/movie/<int:movie_id>')
+@app.route('/movie/<int:movie_id>',methods=['GET','POST'])
 def movie_detail(movie_id):
 
 	movie = Movie.query.filter_by(id=movie_id).first()
@@ -141,14 +151,23 @@ def movie_detail(movie_id):
 
 	# Passing movie details to template
 	return render_template('movie.html',
+	id=movie.id,
 	title=movie.title,
 	year=movie.year,
 	poster=movie.movie_poster,
 	director=movie.director,
+	cast=movie.cast,
 	certificate=movie.certificate,
 	runtime=movie.runtime,
 	blurb=movie.blurb,
 	screen=movie.screen)
+
+#To be routed to booking page for a screening
+@app.route('/book/<int:movie_id>',methods=['GET','POST'])
+def movie_book(movie_id):
+	flash('This should be routed to a booking page for movie')
+	return redirect(url_for('home'))
+
 
 
 if __name__=='__main__':

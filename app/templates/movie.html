@@ -11,12 +11,20 @@
         <img align="left" style="padding-right:20px;" src="{{poster}}" 
         alt="Movie Poster" width="200px" height="300px"object-fit="fill">
     </div>
-    <dl style="margin-bottom:220px">
+    <dl>
         <dt>
-            <div id=director>
+            <div id=director style="padding-top:50px;">
                 <h3 style="font-size: 125%;">
                     <span style="font-weight:bold">Director:&nbsp</span>
                     <i>{{director}}</i>
+                </h3> 
+            </div>
+        </dt>
+        <dt>
+            <div id=cast>
+                <h3 style="font-size: 125%;">
+                    <span style="font-weight:bold">Cast Members:&nbsp</span>
+                    <i>{{cast}}</i>
                 </h3> 
             </div>
         </dt>
@@ -44,10 +52,18 @@
                 </h3> 
             </div>
         </dt>
+        <dt>
+            <div id=booking>
+                <form action="/book/{{id}}" method="POST">
+                    <button name="book_button" type="submit" value="book">
+                        Book a screening</button>
+                </form>
+            </div>
+        </dt>
     </dl>
 
-    
-    <div id=description>
+
+    <div id=description style="padding-top:100px;">
         <h3 style="font-size: 125%;">
             <span style="font-weight:bold">Synopsis:&nbsp</span>
             <i>{{blurb}}&nbsp</i>

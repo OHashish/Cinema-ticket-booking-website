@@ -115,9 +115,8 @@ def logout():
 
 @app.route('/view_tickets',methods=['GET','POST'])
 def ticket():
-	tickets=Ticket.query.filter_by(user_id=current_user.id)
-	now=datetime.now()
-	current_time = now
+	tickets=Ticket.query.filter_by(user_id=current_user.id) # get all tickets of the current user
+	current_time=datetime.now() #get current time to compare it to ticket time
 	return render_template('view_tickets.html',tickets=tickets,current_time=current_time)
 
 if __name__=='__main__':

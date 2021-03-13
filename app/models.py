@@ -13,6 +13,7 @@ class Ticket(db.Model):
     id =db.Column(db.Integer,primary_key=True)
     time=db.Column(db.DateTime)
     screen=db.relationship("Screen",backref='ticket',uselist=False)
+    
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'))
 
 class Screen(db.Model):

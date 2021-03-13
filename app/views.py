@@ -113,5 +113,12 @@ def logout():
 	logout_user()
 	return redirect(url_for("login"))
 
+@app.route('/view_tickets',methods=['GET','POST'])
+def ticket():
+	tickets=Ticket.query.filter_by(user_id=current_user.id)
+	now=datetime.now()
+	current_time = now
+	return render_template('view_tickets.html',tickets=tickets,current_time=current_time)
+
 if __name__=='__main__':
 	app.run(debug=True)

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-center">My Tickets</h1>
+    {% for ticket in tickets%}
+    <div class="form-group">
+        <h6>Date: {{ticket.time.strftime('%d-%m-%Y')}}</h6>
+        <h6>Time: {{ticket.time.strftime('%H:%M %p')}}</h6>
+        <h6>Ticket NO. : {{ticket.id}}</h6>
+        <h6>Screen: {{ticket.screen.id}}</h6>
+        <h6>Movie: {{ticket.screen.movie.title}}</h6>
+    </div>
+    {% if current_time > ticket.time %}
+    <h5 style = "color:Red;">Expired</h5>
+    {% else %}
+    <h5 style = "color:Green;" >Available</h5>
+    {% endif %}
+    {%endfor%}
+    <hr>
+{% endblock content %}

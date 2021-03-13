@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField , PasswordField ,BooleanField,SubmitField,TextAreaField
+from wtforms import StringField , PasswordField ,BooleanField,SubmitField,TextAreaField, SelectField
 from wtforms.validators import DataRequired,Email,Length,EqualTo
+
 
 class LoginForm(FlaskForm):
     email = StringField('Email',validators=[DataRequired(), Email()])
@@ -15,5 +16,6 @@ class RegisterForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password',validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
 
-
-
+class BookingForm(FlaskForm):
+    title = SelectField('title', choices=[('movie1', 'movie1'), ('movie2', 'movie2'), ('movie3', 'movie3')])
+    time = SelectField('runtime', choices=[])

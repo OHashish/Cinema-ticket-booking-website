@@ -1,6 +1,6 @@
 from flask import render_template, flash,redirect , url_for , request ,session,jsonify
 from app import app, db, admin,bcrypt
-from .forms import LoginForm , RegisterForm
+from .forms import LoginForm , RegisterForm, BookingForm
 from datetime import datetime
 from flask_admin.contrib.sqla import ModelView
 from .models import User,Screen,Ticket,Movie,Seat
@@ -18,29 +18,53 @@ class UserView(ModelView):
 		if request.method == 'POST':
 
 			title = request.form['title']
-			movie= ia.search_movie(title)[0]
-			ia.update(movie, info = ['main','plot'])
-			blurb=str(movie['plot outline'])
+			if len(ia.search_movie(title)) == 0:
+				return redirect('/admin/movie')
 
-			#Finding UK certificate and striping for age only 
+			movie= ia.search_movie(title)[0]
+
+			ia.update(movie, info = ['main','plot'])
+			title=str(movie['title'])
+			blurb=str(movie['plot outline'])
+			year=int(movie['year'])
+
+			#Finding UK certificate and striping for age only
 			for certificate in movie['certificates']:
 				if 'United Kingdom' in certificate:
-					certificate = certificate[15:]
+					certificate = certificate.split(":")
+					certificate = certificate[1]
 					break
 
+			#Getting first 5 actors for main actors
+			actors = ""
+			num = 0
+			for actor in movie['cast']:
+				actors += actor['name'] + ", "
+				num += 1
+				if num >= 4:
+					actors = actors[:-2]
+					break
+
+			#Formatting director name correctly
+			for director in movie['director']:
+				director = director['name']
+				break
+
+			movie_poster = movie['cover url']
 			runtime = int(movie['runtime'][0])
 
 			new_movie = Movie(title=title,blurb=blurb,certificate=certificate,
-							runtime=runtime)
+							runtime=runtime,director=director,
+							movie_poster=movie_poster, year=year, cast=actors)
 			db.session.add(new_movie)
 			db.session.commit()
 
 			return redirect('/admin/movie')
 		else:
 			return self.render('admin/movie_index.html')
-		
-		
-		
+
+
+
 
 #Create all admin Views
 admin.add_view(ModelView(User,db.session))
@@ -63,11 +87,25 @@ def load_user(user_id):
 @app.route('/')
 def index():
 	return render_template('index.html')
-	
+
 @login_required
 @app.route('/home')
 def home():
 	return render_template('home.html')
+
+@app.route('/availability')
+def availability():
+	return render_template('availability.html')
+
+@app.route('/seats')
+def seats():
+	return render_template('seats.html')
+
+@app.route('/booking', methods=['GET', 'POST'])
+def booking():
+	form=BookingForm()
+	form.time.choices=[(time.id) for title in Movie.query.filter_by(title='Movie1').all()]
+	return render_template('booking.html', form=form)
 
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -112,6 +150,42 @@ def signup():
 def logout():
 	logout_user()
 	return redirect(url_for("login"))
+
+@app.route('/movie/<int:movie_id>',methods=['GET','POST'])
+def movie_detail(movie_id):
+
+	movie = Movie.query.filter_by(id=movie_id).first()
+
+	# Redirection to homepage when movie not found
+	if movie is None:
+		flash("The movie you were trying to find isn't being shown right now")
+		return redirect(url_for('home'))
+
+	if movie.screen is None:
+		screen = "None"
+	else:
+		screen =  "Screen " + str(movie.screen.id)
+
+	# Passing movie details to template
+	return render_template('movie.html',
+	id=movie.id,
+	title=movie.title,
+	year=movie.year,
+	poster=movie.movie_poster,
+	director=movie.director,
+	cast=movie.cast,
+	certificate=movie.certificate,
+	runtime=movie.runtime,
+	blurb=movie.blurb,
+	screen=screen)
+
+#To be routed to booking page for a screening
+@app.route('/book/<int:movie_id>',methods=['GET','POST'])
+def movie_book(movie_id):
+	flash('This should be routed to a booking page for movie')
+	return redirect(url_for('home'))
+
+
 
 if __name__=='__main__':
 	app.run(debug=True)

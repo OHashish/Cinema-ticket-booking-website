@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<div align=center>
+  <h1>Book Your tickets now</h1>
+</div>
+
+  <body>
+  <div class="mdl-layout__drawer">
+  </div>
+
+  <div align=center>
+   <div class="card" style="width: 30rem;" align=center>
+     <div class="card-body">
+      <p class="card-text"><h4>Ready to buy tickets ?</h4></p>
+        <div class="form-group">
+        <form action="/checkAvail" method="POST">
+    <label for="exampleFormControlSelect1">Select Movie</label>
+    <select class="form-control" id="exampleFormControlSelect1" name="movie">
+      <option>Movie1</option>
+      <option>Movie2</option>
+      <option>Movie3</option>
+    </select>
+  </div>
+           <div class="form-group">
+    <label for="exampleFormControlSelect1">Select Age Group</label>
+    <select class="form-control" id="exampleFormControlSelect1" name="venue">
+      <option>Child (16 and under)</option>
+      <option>Adult (Above 16)</option>
+      <option>Senior (65 and above)</option>
+    </select>
+    <form>
+  <div class="form-group">
+    <label for="exampleFormControlInput1">Date</label>
+    <input type="Date" class="form-control" id="exampleFormControlInput1" placeholder="DD-MMM-YYYY" name="date">
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlInput1">No of Tickets</label>
+    <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="No of Tickets" name="no_of_tickets">
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlSelect1">Show Time</label>
+    <select class="form-control" id="exampleFormControlSelect1" name="show_no">
+      <option>9.00 AM</option>
+      <option>12.00 PM</option>
+      <option>3.00 PM</option>
+      <option>6.00 PM</option>
+      <option>9.00 PM</option>
+    </select>
+  </div>
+
+  </div>
+
+      <button type="submit" class="btn btn-primary" input type="submit" >CHECK</button>
+      </form>
+  </div>
+  </div>
+</div>
+</div><!-- Your content goes here --></div>
+  </main>
+</div>
+
+{% endblock %}

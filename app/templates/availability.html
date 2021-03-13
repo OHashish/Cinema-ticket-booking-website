@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+
+    </div>
+  </header>
+
+  <div align=center>
+  <form action="/book" method="POST">
+   <div class="card" style="width: 32rem;" align=center>
+     <div class="card-body">
+      <h1 class="card-title">TICKET IS READY</h1>
+      <h4>CUSTOMER NAME - {{user}}</H4>
+      <h4>MOVIE- {{movie}}</H4>
+      <h4>TICKET TYPE - {{type}}</H4>
+      <h4>SHOW TIME - {{show_no}}</H4>
+      <h4>NUMBER OF TICKETS - {{tickets}}</H4>
+      <h4>Transaction ID - {{tid}}</H4>
+      <h3>TOTAL COST = {{cost}}</h3>
+      <a href="showmovies" class="btn btn-warning" role="button" onclick="Cancel()"  >Cancel</a>
+      <button type="submit" class="btn btn-outline-success" input type="submit" onclick="myFunction()" >Confirm</button>
+
+<script>
+function myFunction() {
+    alert("BOOKING SUCCESSFUL \n :)");
+}
+</script>
+<script>
+function Cancel() {
+    alert("BOOKING CANCELLED \n :o");
+}
+</script>
+    </form>
+  </div>
+  </div>
+</div>
+</div>
+
+
+
+
+
+
+<!-- Your content goes here --></div>
+  </main>
+</div>
+{% endblock %}

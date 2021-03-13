@@ -1,6 +1,6 @@
 from flask import render_template, flash,redirect , url_for , request ,session,jsonify
 from app import app, db, admin,bcrypt
-from .forms import LoginForm , RegisterForm
+from .forms import LoginForm , RegisterForm, BookingForm
 from datetime import datetime
 from flask_admin.contrib.sqla import ModelView
 from .models import User,Screen,Ticket,Movie,Seat
@@ -32,6 +32,21 @@ def index():
 @app.route('/home')
 def home():
 	return render_template('home.html')
+
+@app.route('/availability')
+def availability():
+	return render_template('availability.html')
+
+@app.route('/seats')
+def seats():
+	return render_template('seats.html')
+
+@app.route('/booking', methods=['GET', 'POST'])
+def booking():
+	form=BookingForm()
+	form.time.choices=[(time.id) for title in Movie.query.filter_by(title='Movie1').all()]
+	return render_template('booking.html', form=form)
+
 
 @app.route('/login',methods=['GET','POST'])
 def login():

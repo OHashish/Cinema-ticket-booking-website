@@ -14,11 +14,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
     <script type=text/javascript src="{{url_for('static', filename='jquery.js') }}"></script>
-    
+
   </body>
 
   <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
     <a class="navbar-brand mr-4" href="/home">Cinema</a>
+    <a class="navbar-brand mr-4" href="/booking">Book Ticket</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -36,13 +37,16 @@
         <li class="nav-item"><a class="nav-link" href="/signup">Sign up<span class="sr-only">(current)</span></a></li>
         <li class="nav-item"><a class="nav-link" href="/login">Login<span class="sr-only">(current)</span></a></li>
         {% endif %}
-
+        <form class="d-flex" method="GET">
+          <input class="form-control me-2" type="search" placeholder="Search" name="q">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
       </div>
     </div>
   </ul>
   </nav>
 <div class="container">
-    
+
   {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
@@ -52,7 +56,7 @@
     {% endfor %}
   {% endif %}
 {% endwith %}
-       
+
 {% block content %}
 {% endblock %}
 </div>

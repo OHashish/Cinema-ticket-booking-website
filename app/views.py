@@ -18,60 +18,36 @@ class UserView(ModelView):
 		if request.method == 'POST':
 
 			title = request.form['title']
-			if len(ia.search_movie(title)) == 0:
-				return redirect('/admin/movie')
-
 			movie= ia.search_movie(title)[0]
-
 			ia.update(movie, info = ['main','plot'])
-			title=str(movie['title'])
 			blurb=str(movie['plot outline'])
-			year=int(movie['year'])
 
-			#Finding UK certificate and striping for age only
+			#Finding UK certificate and striping for age only 
 			for certificate in movie['certificates']:
 				if 'United Kingdom' in certificate:
-					certificate = certificate.split(":")
-					certificate = certificate[1]
+					certificate = certificate[15:]
 					break
 
-			#Getting first 5 actors for main actors
-			actors = ""
-			num = 0
-			for actor in movie['cast']:
-				actors += actor['name'] + ", "
-				num += 1
-				if num >= 4:
-					actors = actors[:-2]
-					break
-
-			#Formatting director name correctly
-			for director in movie['director']:
-				director = director['name']
-				break
-
-			movie_poster = movie['cover url']
 			runtime = int(movie['runtime'][0])
 
 			new_movie = Movie(title=title,blurb=blurb,certificate=certificate,
-							runtime=runtime,director=director,
-							movie_poster=movie_poster, year=year, cast=actors)
+							runtime=runtime)
 			db.session.add(new_movie)
 			db.session.commit()
 
 			return redirect('/admin/movie')
 		else:
 			return self.render('admin/movie_index.html')
-
-
-
+		
+		
+		
 
 #Create all admin Views
 admin.add_view(ModelView(User,db.session))
 admin.add_view(ModelView(Screen,db.session))
 admin.add_view(ModelView(Ticket,db.session))
 admin.add_view(ModelView(Seat,db.session))
-admin.add_view(UserView(Movie,db.session))
+admin.add_view(ModelView(Movie,db.session))
 
 
 
@@ -150,6 +126,12 @@ def signup():
 def logout():
 	logout_user()
 	return redirect(url_for("login"))
+
+@app.route('/view_tickets',methods=['GET','POST'])
+def ticket():
+	tickets=Ticket.query.filter_by(user_id=current_user.id) # get all tickets of the current user
+	current_time=datetime.now() #get current time to compare it to ticket time
+	return render_template('view_tickets.html',tickets=tickets,current_time=current_time)
 
 @app.route('/movie/<int:movie_id>',methods=['GET','POST'])
 def movie_detail(movie_id):

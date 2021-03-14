@@ -13,9 +13,9 @@
      <div class="card-body">
       <p class="card-text"><h4>Ready to buy tickets ?</h4></p>
         <div class="form-group">
-        <form action="/checkAvail" method="POST">
+        <form action="/payment" method="POST">
     <label for="exampleFormControlSelect1">Select Movie</label>
-    <select class="form-control" id="exampleFormControlSelect1" name="movie">
+    <select class="form-control" id="exampleFormControlSelect1" name="movie" required>
       <option>Movie1</option>
       <option>Movie2</option>
       <option>Movie3</option>
@@ -23,7 +23,7 @@
   </div>
            <div class="form-group">
     <label for="exampleFormControlSelect1">Select Age Group</label>
-    <select class="form-control" id="exampleFormControlSelect1" name="venue">
+    <select class="form-control" id="exampleFormControlSelect1" name="venue" required>
       <option>Child (16 and under)</option>
       <option>Adult (Above 16)</option>
       <option>Senior (65 and above)</option>
@@ -31,15 +31,19 @@
     <form>
   <div class="form-group">
     <label for="exampleFormControlInput1">Date</label>
-    <input type="Date" class="form-control" id="exampleFormControlInput1" placeholder="DD-MMM-YYYY" name="date">
+    <input type="Date" class="form-control" id="exampleFormControlInput1" placeholder="DD-MMM-YYYY" name="date" required>
+    <script type="text/javascript">
+      var today = new Date().toISOString().split('T')[0];
+      document.getElementsByName("date")[0].setAttribute('min', today);
+    </script>
   </div>
   <div class="form-group">
     <label for="exampleFormControlInput1">No of Tickets</label>
-    <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="No of Tickets" name="no_of_tickets">
+    <input type="number" min= "1" class="form-control" id="exampleFormControlInput1" placeholder="No of Tickets" name="no_of_tickets" required>
   </div>
   <div class="form-group">
     <label for="exampleFormControlSelect1">Show Time</label>
-    <select class="form-control" id="exampleFormControlSelect1" name="show_no">
+    <select class="form-control" id="exampleFormControlSelect1" name="show_no" required>
       <option>9.00 AM</option>
       <option>12.00 PM</option>
       <option>3.00 PM</option>
@@ -49,8 +53,17 @@
   </div>
 
   </div>
+      {% if current_user.is_authenticated %}
+      <button type="submit" class="btn btn-primary" input type="submit">Continue</button>
+      {% else %}
+      <button class="btn btn-primary" onclick="redir()">Please log in first.</button>
+      {% endif %}
+      <script type="text/javascript">
+        function redir(){
+          window.location="/login";
+        }
+      </script>
 
-      <button type="submit" class="btn btn-primary" input type="submit" >CHECK</button>
       </form>
   </div>
   </div>

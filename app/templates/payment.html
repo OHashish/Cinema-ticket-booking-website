@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<head>   
+</head>
+  <body>
+    <div class="flex-container" align=center>
+      <div class="flex-child poster">
+        <h1>Select payment method:</h1>
+        <button type="submit" class="btn btn-primary btn-lg" input type="submit" onclick="cash()">Cash</button>
+        <a href="#" id="buy_now_btn" class="btn btn-primary btn-lg">Card</a>
+
+      </div>
+      <footer class="footer">
+        <p>&copy; Group 37's Cinema</p>
+      </footer>
+      <script src="https://js.stripe.com/v3/"></script>
+      {#
+      <script>
+        const checkout_public_key = '{{checkout_public_key}}';
+        const checkout_session_id = '{{checkout_session_id}}';
+      </script>
+      #}
+      <script src="{{ url_for('static', filename='stripe-script.js') }}"></script>
+
+        <script type="text/javascript">
+    window.onload = check();
+
+    function check(){
+      var avail = true;
+      if(avail){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+     function cash(){
+        window.location = "/thanks";
+      
+    }
+  </script>
+
+    </div> <!-- /container -->
+{% endblock %}
+ 

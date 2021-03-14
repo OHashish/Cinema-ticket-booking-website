@@ -16,9 +16,9 @@
         <form action="/checkAvail" method="POST">
     <label for="exampleFormControlSelect1">Select Movie</label>
     <select class="form-control" id="exampleFormControlSelect1" name="movie">
-      <option>Movie1</option>
-      <option>Movie2</option>
-      <option>Movie3</option>
+      {% for movie in movies %}
+      <option>{{movie.title}}</option>
+      {% endfor %}
     </select>
   </div>
            <div class="form-group">

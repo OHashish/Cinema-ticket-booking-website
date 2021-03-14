@@ -104,8 +104,9 @@ def seats():
 @app.route('/booking', methods=['GET', 'POST'])
 def booking():
 	form=BookingForm()
+	movies = Movie.query.filter_by().all()	
 	form.time.choices=[(time.id) for title in Movie.query.filter_by(title='Movie1').all()]
-	return render_template('booking.html', form=form)
+	return render_template('booking.html', form=form, movies=movies)
 
 @app.route('/login',methods=['GET','POST'])
 def login():

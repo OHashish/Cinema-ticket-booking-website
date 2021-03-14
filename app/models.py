@@ -20,6 +20,8 @@ class Ticket(db.Model):
 
 class Screen(db.Model):
     id =db.Column(db.Integer,primary_key=True)
+    number =db.Column(db.Integer)
+    screen_time=db.Column(db.DateTime)
     tickets=db.relationship('Ticket',backref='screen')
     seats=db.relationship("Seat",backref='screen',lazy=True)
     movie=db.relationship("Movie",backref='screen',uselist=False)

@@ -20,7 +20,10 @@ class UserView(ModelView):
 			title = request.form['title']
 			movie= ia.search_movie(title)[0]
 			ia.update(movie, info = ['main','plot'])
+			title=str(movie['title'])
 			blurb=str(movie['plot outline'])
+			year=int(movie['year'])
+
 
 			#Finding UK certificate and striping for age only 
 			for certificate in movie['certificates']:
@@ -28,10 +31,28 @@ class UserView(ModelView):
 					certificate = certificate[15:]
 					break
 
+			#Getting first 5 actors for main actors
+			actors = ""
+			num = 0
+			for actor in movie['cast']:
+				actors += actor['name'] + ", "
+				num += 1
+				if num >= 4:
+					actors = actors[:-2]
+					break
+
+			#Formatting director name correctly
+			for director in movie['director']:
+				director = director['name']
+				break
+
+			movie_poster = movie['cover url']
 			runtime = int(movie['runtime'][0])
 
 			new_movie = Movie(title=title,blurb=blurb,certificate=certificate,
-							runtime=runtime)
+							runtime=runtime,director=director,
+							movie_poster=movie_poster,year=year,cast=actors)
+
 			db.session.add(new_movie)
 			db.session.commit()
 
@@ -47,7 +68,7 @@ admin.add_view(ModelView(User,db.session))
 admin.add_view(ModelView(Screen,db.session))
 admin.add_view(ModelView(Ticket,db.session))
 admin.add_view(ModelView(Seat,db.session))
-admin.add_view(ModelView(Movie,db.session))
+admin.add_view(UserView(Movie,db.session))
 
 
 

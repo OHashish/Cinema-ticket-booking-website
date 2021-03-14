@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 style="padding-bottom: 50px;">Movies on show:</h1>
+<dl>
+{% for movie in movies %}
+    <dt>{{movie.title}}&nbsp({{movie.certificate}})</dt>
+        <dl style="padding-bottom: 20px; border-bottom:1px dashed #000;">
+            <a href="/movie/{{movie.id}}">View movie Details</a>
+        </dl>
+
+{% endfor %}
+</dl>
+{% endblock %}

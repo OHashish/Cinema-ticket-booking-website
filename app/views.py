@@ -151,6 +151,13 @@ def logout():
 	logout_user()
 	return redirect(url_for("login"))
 
+@app.route('/movie')
+def movie_list():
+
+	movies = Movie.query.filter_by().all()
+
+	return render_template('movie_list.html', movies=movies)
+
 @app.route('/movie/<int:movie_id>',methods=['GET','POST'])
 def movie_detail(movie_id):
 
@@ -182,8 +189,7 @@ def movie_detail(movie_id):
 #To be routed to booking page for a screening
 @app.route('/book/<int:movie_id>',methods=['GET','POST'])
 def movie_book(movie_id):
-	flash('This should be routed to a booking page for movie')
-	return redirect(url_for('home'))
+	return redirect(url_for('booking'))
 
 
 

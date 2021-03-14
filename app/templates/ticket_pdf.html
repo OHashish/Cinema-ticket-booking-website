@@ -1,0 +1,11 @@
+<div class="form-group">
+    <h6>Bought on {{ticket.time.strftime('%d-%m-%Y')}} at {{ticket.time.strftime('%H:%M %p')}}</h6>
+    <h6>Ticket NO. : {{ticket.id}}</h6>
+    <h6>Screen: {{ticket.screen.id}}</h6>
+    <h6>Movie: {{ticket.screen.movie.title}}</h6>
+    <h6>Price: ${{ticket.price}}</h6>
+    <h6>Type: {{ticket.age_type}}</h6>
+    <h6>Seat: {{ticket.seat.position}}</h6>
+</div>
+
+

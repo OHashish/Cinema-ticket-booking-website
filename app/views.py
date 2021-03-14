@@ -9,6 +9,8 @@ from flask_wtf import FlaskForm
 from flask_login import LoginManager,UserMixin,login_user,login_required,logout_user,current_user
 from imdb import IMDb
 import stripe
+from flask_weasyprint import HTML, render_pdf
+
 
 #View model to add IMDB film details into the movies database.
 class UserView(ModelView):
@@ -198,10 +200,22 @@ def logout():
 	return redirect(url_for("login"))
 
 @app.route('/view_tickets',methods=['GET','POST'])
-def ticket():
+def view_tickets():
 	tickets=Ticket.query.filter_by(user_id=current_user.id) # get all tickets of the current user
 	current_time=datetime.now() #get current time to compare it to ticket time
 	return render_template('view_tickets.html',tickets=tickets,current_time=current_time)
+
+@app.route('/ticket/<int:ticket_id>/',methods=['GET','POST'])
+def ticket_html(ticket_id):
+	ticket=Ticket.query.filter_by(id=ticket_id).one()
+	return render_template('ticket_pdf.html', ticket=ticket)
+
+@app.route('/ticket/<int:ticket_id>.pdf')
+def ticket_pdf(ticket_id):
+    return render_pdf(url_for('ticket_html', ticket_id=ticket_id))
+
+
+
 	
 @app.route('/movie')
 def movie_list():

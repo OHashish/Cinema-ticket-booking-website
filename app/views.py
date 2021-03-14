@@ -1,4 +1,4 @@
-from flask import render_template, flash,redirect , url_for , request ,session,jsonify
+from flask import render_template, flash,redirect , url_for , request ,session,jsonify, make_response
 from app import app, db, admin,bcrypt
 from .forms import LoginForm , RegisterForm, BookingForm
 from datetime import datetime
@@ -8,6 +8,7 @@ from flask_admin import BaseView, expose
 from flask_wtf import FlaskForm
 from flask_login import LoginManager,UserMixin,login_user,login_required,logout_user,current_user
 from imdb import IMDb
+import stripe
 
 #View model to add IMDB film details into the movies database.
 class UserView(ModelView):
@@ -79,6 +80,53 @@ admin.add_view(UserView(Movie,db.session))
 login_manager=LoginManager()
 login_manager.init_app(app)
 login_manager.login_view='login'
+
+stripe.api_key = 'sk_test_51ITU84JRnfjfZwZwgY8i7TcJNu4hv4PY3Fm73LObBLkBc6XuFGHG4rphITY3MWImzJOZi7kL7usQOccRodFXGm1r008lSBDECv'
+@app.route('/payment', methods=['GET', 'POST'])
+def payment():
+    movie = request.form["movie"];
+    venue = request.form["venue"];
+    date = request.form["date"];
+    no_of_tickets = request.form["no_of_tickets"];
+    show_no = request.form["show_no"];
+
+    resp = make_response(render_template('payment.html'))
+    resp.set_cookie('movie', movie)
+    resp.set_cookie('venue', venue)
+    resp.set_cookie('date', date)
+    resp.set_cookie('no_of_tickets', no_of_tickets)
+    resp.set_cookie('show_no', show_no)
+
+    return resp
+    
+@app.route('/stripe_pay', methods=['GET', 'POST'])
+def stripe_pay():
+    age = request.cookies.get('venue')
+    if (age=="Child (16 and under)"):
+        age = 'price_1ITUMJJRnfjfZwZwxWrEWOQR'
+    elif(age=="Adult (Above 16)"):
+        age = 'price_1ITUNhJRnfjfZwZwmuukV1G9'
+    elif(age=="Senior (65 and above)"):
+        age = 'price_1ITUO3JRnfjfZwZwu6AK9VOx'
+    quant = request.cookies.get('no_of_tickets')
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[{
+            'price': age,
+            'quantity': quant,
+        }],
+        mode='payment',
+        success_url=url_for('thanks', _external=True) + '?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url=url_for('booking', _external=True),
+    )
+    return {
+        'checkout_session_id': session['id'], 
+        'checkout_public_key': app.config['STRIPE_PUBLIC_KEY']
+    }
+
+@app.route('/thanks')
+def thanks():
+    return render_template('availability.html')
 
 @login_manager.user_loader
 def load_user(user_id):

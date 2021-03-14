@@ -12,6 +12,8 @@ bcrypt=Bcrypt(app)
 log = logging.getLogger('werkzeug')
 log.disabled = True
 app.logger.disabled = True
+app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51ITU84JRnfjfZwZwEpMJmgofj4yGOyTW6lOyorqQOxONeU2vDRWES4mZ6SIOjBIoVskeWvqzP9NCGV3niNW09cuQ00ijCpqB8X'
+app.config['STRIPE_SECRET_KEY'] = 'sk_test_51ITU84JRnfjfZwZwgY8i7TcJNu4hv4PY3Fm73LObBLkBc6XuFGHG4rphITY3MWImzJOZi7kL7usQOccRodFXGm1r008lSBDECv'
 
 migrate = Migrate(app, db)
 

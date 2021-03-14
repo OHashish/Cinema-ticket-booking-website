@@ -80,8 +80,9 @@ def seats():
 @app.route('/booking', methods=['GET', 'POST'])
 def booking():
 	form=BookingForm()
+	movies = Movie.query.filter_by().all()	
 	form.time.choices=[(time.id) for title in Movie.query.filter_by(title='Movie1').all()]
-	return render_template('booking.html', form=form)
+	return render_template('booking.html', form=form, movies=movies)
 
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -132,6 +133,13 @@ def ticket():
 	tickets=Ticket.query.filter_by(user_id=current_user.id) # get all tickets of the current user
 	current_time=datetime.now() #get current time to compare it to ticket time
 	return render_template('view_tickets.html',tickets=tickets,current_time=current_time)
+	
+@app.route('/movie')
+def movie_list():
+
+	movies = Movie.query.filter_by().all()
+
+	return render_template('movie_list.html', movies=movies)
 
 @app.route('/movie/<int:movie_id>',methods=['GET','POST'])
 def movie_detail(movie_id):
@@ -164,8 +172,7 @@ def movie_detail(movie_id):
 #To be routed to booking page for a screening
 @app.route('/book/<int:movie_id>',methods=['GET','POST'])
 def movie_book(movie_id):
-	flash('This should be routed to a booking page for movie')
-	return redirect(url_for('home'))
+	return redirect(url_for('booking'))
 
 
 

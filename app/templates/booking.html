@@ -16,7 +16,7 @@
         <form action="/payment" method="POST">
     <label for="exampleFormControlSelect1">Select Movie</label>
 
-    <select class="form-control" id="exampleFormControlSelect1" name="movie">
+    <select class="form-control" id="exampleFormControlSelect1" name="movie" required>
       {% for movie in movies %}
       <option>{{movie.title}}</option>
       {% endfor %}

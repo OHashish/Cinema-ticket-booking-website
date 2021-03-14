@@ -14,6 +14,7 @@
     {% if current_time > ticket.screen.screen_time %}
     <h5 style = "color:Red;">Expired</h5>
     {% else %}
+    <nav><a href="{{ url_for('ticket_pdf', ticket_id=ticket.id) }}">View as PDF</a></nav>
     <h5 style = "color:Green;" >Available</h5>
     {% endif %}
     <hr>

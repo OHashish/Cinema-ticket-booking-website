@@ -12,19 +12,26 @@ class User(UserMixin,db.Model):
 class Ticket(db.Model):
     id =db.Column(db.Integer,primary_key=True)
     time=db.Column(db.DateTime)
-    screen=db.relationship("Screen",backref='ticket',uselist=False)
+    screen_id= db.Column(db.Integer,db.ForeignKey('screen.id'))
+    age_type=db.Column(db.String(50))
+    price=db.Column(db.Float)
+    seat=db.relationship('Seat',backref='ticket',uselist=False)
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'))
 
 class Screen(db.Model):
     id =db.Column(db.Integer,primary_key=True)
-    ticket_id=db.Column(db.Integer,db.ForeignKey('ticket.id'))
+    number =db.Column(db.Integer)
+    screen_time=db.Column(db.DateTime)
+    tickets=db.relationship('Ticket',backref='screen')
     seats=db.relationship("Seat",backref='screen',lazy=True)
     movie=db.relationship("Movie",backref='screen',uselist=False)
     
 
 class Seat(db.Model):
     id=db.Column(db.Integer,primary_key=True)
+    position=db.Column(db.String(80))
     availability =db.Column(db.Boolean)
+    ticket_id= db.Column(db.Integer,db.ForeignKey('ticket.id'))
     screen_id=db.Column(db.Integer,db.ForeignKey('screen.id'))
 
 class Movie(db.Model):

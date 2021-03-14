@@ -15,10 +15,11 @@
         <div class="form-group">
         <form action="/payment" method="POST">
     <label for="exampleFormControlSelect1">Select Movie</label>
-    <select class="form-control" id="exampleFormControlSelect1" name="movie" required>
-      <option>Movie1</option>
-      <option>Movie2</option>
-      <option>Movie3</option>
+
+    <select class="form-control" id="exampleFormControlSelect1" name="movie">
+      {% for movie in movies %}
+      <option>{{movie.title}}</option>
+      {% endfor %}
     </select>
   </div>
            <div class="form-group">

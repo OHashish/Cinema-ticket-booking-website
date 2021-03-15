@@ -10,6 +10,17 @@ from flask_login import LoginManager,UserMixin,login_user,login_required,logout_
 from imdb import IMDb
 import stripe
 from flask_weasyprint import HTML, render_pdf
+from flask_mail import Mail,Message
+
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT']=465
+app.config['MAIL_USE_SSL']=True
+app.config['MAIL_USERNAME']='email.sever.josh@gmail.com'
+app.config['MAIL_PASSWORD']='123456789Ap'
+app.config['MAIL_DEFAULT_SENDER']='email.sever.josh@gmail.com'
+app.config['MAIL_MAX_EMAILS']=None
+app.config['MAIL_ASCII_ATTACHMENTS']=False
+mail = Mail(app)
 
 
 #View model to add IMDB film details into the movies database.
@@ -213,6 +224,15 @@ def ticket_html(ticket_id):
 @app.route('/ticket/<int:ticket_id>.pdf')
 def ticket_pdf(ticket_id):
     return render_pdf(url_for('ticket_html', ticket_id=ticket_id))
+
+@app.route('/send_email/<int:ticket_id>')
+def send_email(ticket_id):
+	ticket=Ticket.query.filter_by(id=ticket_id).one()
+	msg = Message('This is your ticket',recipients = [current_user.email])
+	msg.html =  render_template('ticket_pdf.html', ticket=ticket)
+	mail.send(msg)
+	flash("Ticket sent to email !","success")
+	return redirect(url_for('view_tickets'))
 
 
 

@@ -15,6 +15,7 @@
     <h5 style = "color:Red;">Expired</h5>
     {% else %}
     <nav><a href="{{ url_for('ticket_pdf', ticket_id=ticket.id) }}">View as PDF</a></nav>
+    <nav><a href="{{ url_for('send_email', ticket_id=ticket.id) }}">Send to email</a></nav>
     <h5 style = "color:Green;" >Available</h5>
     {% endif %}
     <hr>

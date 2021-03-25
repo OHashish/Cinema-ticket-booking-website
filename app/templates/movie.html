@@ -13,7 +13,7 @@
     </div>
     <dl>
         <dt>
-            <div id=director style="padding-top:50px;">
+            <div id=director style="padding-top:20px;">
                 <h3 style="font-size: 125%;">
                     <span style="font-weight:bold">Director:&nbsp</span>
                     <i>{{director}}</i>
@@ -47,15 +47,17 @@
         <dt>
             <div id=screen>
                 <h3 style="font-size: 125%;">
-                    <span style="font-weight:bold">Showing on screen:&nbsp</span>
-                    <i>{{screen}}</i>
+                    <span style="font-weight:bold">Next Screenings:&nbsp<br></span>
+                    {% for screening in screenings %}
+                        <i>{{screening}}</i><br>
+                    {% endfor %}
                 </h3> 
             </div>
         </dt>
         <dt>
-            <div id=booking>
+            <div id=booking style="padding-top:5px;">
                 <form action="/book/{{id}}" method="POST">
-                    <button name="book_button" type="submit" value="book">
+                    <button class="btn btn-primary" name="book_button" type="submit" value="book">
                         Book a screening</button>
                 </form>
             </div>
@@ -63,7 +65,7 @@
     </dl>
 
 
-    <div id=description style="padding-top:100px;">
+    <div id=description style="padding-top:50px;">
         <h3 style="font-size: 125%;">
             <span style="font-weight:bold">Synopsis:&nbsp</span>
             <i>{{blurb}}&nbsp</i>

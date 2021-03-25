@@ -144,7 +144,7 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-	return render_template('index.html')
+	return redirect(url_for('home'))
 
 @login_required
 @app.route('/home')
@@ -254,10 +254,31 @@ def movie_detail(movie_id):
 		flash("The movie you were trying to find isn't being shown right now")
 		return redirect(url_for('home'))
 
-	if movie.screen is None:
-		screen = "None"
+
+	# Gets all the screenings of the movie
+	screenings = Screen.query.filter_by(movie=movie).order_by(Screen.screen_time).all()
+
+	# if there are no screenings, the website will display "None"
+	if screenings == None:
+		screen_list = ["None"]
 	else:
-		screen =  "Screen " + str(movie.screen.id)
+		screen_list = []
+		i = 0
+		# Creating string to display screening information for
+		# the next 5 screeening of the movie		
+		for screen in screenings:
+			if i >= 4:
+				break
+			elif screen.screen_time < datetime.now():
+				continue
+
+			time = "Screen " + str(screen.number) 
+			time += " at " + str(screen.screen_time.strftime("%H"))
+			time += ":" + str(screen.screen_time.strftime("%M"))
+			time += " on " + str(screen.screen_time.strftime("%B"))
+			time += " " + str(screen.screen_time.strftime("%d"))
+			screen_list.append(time)
+			i += 1
 
 	# Passing movie details to template
 	return render_template('movie.html',
@@ -270,9 +291,9 @@ def movie_detail(movie_id):
 	certificate=movie.certificate,
 	runtime=movie.runtime,
 	blurb=movie.blurb,
-	screen=screen)
+	screenings=screen_list)
 
-#To be routed to booking page for a screening
+# Routes the user to the booking page when the book tickets button is pressed
 @app.route('/book/<int:movie_id>',methods=['GET','POST'])
 def movie_book(movie_id):
 	return redirect(url_for('booking'))

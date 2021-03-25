@@ -24,7 +24,7 @@ class Screen(db.Model):
     screen_time=db.Column(db.DateTime)
     tickets=db.relationship('Ticket',backref='screen')
     seats=db.relationship("Seat",backref='screen',lazy=True)
-    movie=db.relationship("Movie",backref='screen',uselist=False)
+    movie_id=db.Column(db.Integer, db.ForeignKey('movie.id'))
     
 
 class Seat(db.Model):
@@ -44,7 +44,7 @@ class Movie(db.Model):
     certificate =db.Column(db.String(20))
     runtime =db.Column(db.Integer)
     movie_poster =db.Column(db.String(100))
-    screen_id=db.Column(db.Integer,db.ForeignKey('screen.id'))
+    screen_id=db.relationship("Screen",backref='movie', lazy=True)
     
     
 

@@ -244,6 +244,25 @@ def movie_list():
 
 	return render_template('movie_list.html', movies=movies)
 
+@app.route('/view_income')
+@login_required
+def view_income():
+	if current_user.username != 'Owner':
+		flash('Email already in use',"danger")
+		return redirect(url_for('home'))
+	else:
+		return render_template('view_income.html')
+
+@app.route('/compare_tickets')
+@login_required
+def compare_tickets():
+	if current_user.username != 'Owner':
+		flash('Email already in use',"danger")
+		return redirect(url_for('home'))
+	else:
+		return render_template('compare_tickets.html')
+
+
 @app.route('/movie/<int:movie_id>',methods=['GET','POST'])
 def movie_detail(movie_id):
 

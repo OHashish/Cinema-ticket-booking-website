@@ -282,10 +282,12 @@ def compare_tickets():
 				
 			return render_template('compare_tickets.html',
 			movies=movie_title,
-			values=tickets_sold)
+			values=tickets_sold,
+			date_chosen=True)
 
 		else:
-			return render_template('compare_tickets.html')
+			return render_template('compare_tickets.html',
+			date_chosen=False)
 
 
 

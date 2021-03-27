@@ -260,7 +260,24 @@ def compare_tickets():
 		flash('Email already in use',"danger")
 		return redirect(url_for('home'))
 	else:
-		return render_template('compare_tickets.html')
+
+		movies = Movie.query.filter_by().all()
+
+		movie_title = []
+		tickets_sold = []
+
+		for movie in movies:
+			value = 0
+			for screen in movie.screen_id:
+				value += len(screen.tickets)
+			
+			movie_title.append(movie.title)
+			tickets_sold.append(value)
+
+		
+		return render_template('compare_tickets.html',
+		movies=movie_title,
+		values=tickets_sold)
 
 
 @app.route('/movie/<int:movie_id>',methods=['GET','POST'])

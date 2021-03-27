@@ -257,7 +257,7 @@ def view_income():
 @login_required
 def compare_tickets():
 	if current_user.username != 'Owner':
-		flash('Email already in use',"danger")
+		flash('You cannot access this site',"danger")
 		return redirect(url_for('home'))
 	else:
 
@@ -287,7 +287,7 @@ def compare_tickets():
 
 		else:
 			return render_template('compare_tickets.html',
-			date_chosen=False)
+			date_chosen =False)
 
 
 

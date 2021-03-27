@@ -3,15 +3,28 @@
 {% block content %}
 <h1 class="text-center" style="padding-bottom: 50px">Compare Tickets</h1>
 
+<form method="POST">
+  <div class="form-group">
+    <label for="exampleFormControlInput1">Compare ticket sales since:</label>
+    <input type="Date" class="form-control" id="date" name="date">
+    <script type="text/javascript">
+      document.getElementById('date').valueAsDate = new Date();
+    </script>
+  </div>
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary" input type="submit">Show Graph</button>
+  </div>
+</form>
+
 <canvas id="myChart"></canvas>
 
 <script>
+
 var ctx = document.getElementById('myChart').getContext('2d');
 var chart = new Chart(ctx, {
-    // The type of chart we want to create
+
     type: 'bar',
 
-    // The data for our dataset
     data: {
         labels: [
           {% for movie in movies %}
@@ -30,12 +43,12 @@ var chart = new Chart(ctx, {
         }]
     },
 
-    // Configuration options go here
     options: {
       scales: {
         yAxes: [{
             ticks: {
                 suggestedMax: 10,
+                min: 0,
                 stepSize: 1
             }
         }]

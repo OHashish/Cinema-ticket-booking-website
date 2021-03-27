@@ -253,7 +253,7 @@ def view_income():
 	else:
 		return render_template('view_income.html')
 
-@app.route('/compare_tickets')
+@app.route('/compare_tickets', methods=['GET','POST'])
 @login_required
 def compare_tickets():
 	if current_user.username != 'Owner':
@@ -261,23 +261,32 @@ def compare_tickets():
 		return redirect(url_for('home'))
 	else:
 
-		movies = Movie.query.filter_by().all()
-
-		movie_title = []
-		tickets_sold = []
-
-		for movie in movies:
-			value = 0
-			for screen in movie.screen_id:
-				value += len(screen.tickets)
+		if request.method == "POST":
 			
-			movie_title.append(movie.title)
-			tickets_sold.append(value)
+			date = request.form['date']
+			date = datetime.strptime(date, '%Y-%m-%d')
 
-		
-		return render_template('compare_tickets.html',
-		movies=movie_title,
-		values=tickets_sold)
+			movies = Movie.query.filter_by().all()
+
+			movie_title = []
+			tickets_sold = []
+
+			for movie in movies:
+				value = 0
+				for screen in movie.screen_id:
+					if screen.screen_time > date:
+						value += len(screen.tickets)
+					
+				movie_title.append(movie.title)
+				tickets_sold.append(value)
+				
+			return render_template('compare_tickets.html',
+			movies=movie_title,
+			values=tickets_sold)
+
+		else:
+			return render_template('compare_tickets.html')
+
 
 
 @app.route('/movie/<int:movie_id>',methods=['GET','POST'])

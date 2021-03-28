@@ -5,11 +5,28 @@
 
 <form method="POST">
   <div class="form-group">
-    <label for="exampleFormControlInput1">Compare ticket sales since:</label>
-    <input type="Date" class="form-control" id="date" name="date">
+    <label for="exampleFormControlInput1">From:</label>
+    <input type="Date" class="form-control" id="startDate" name="startDate">
+    <label for="exampleFormControlInput1">To:</label>
+    <input type="Date" class="form-control" id="endDate" name="endDate">
+    {% if date_chosen %}
     <script type="text/javascript">
-      document.getElementById('date').valueAsDate = new Date();
+      document.getElementById('startDate').valueAsDate = new Date({{start_date.year}},
+                                                                  ({{start_date.month}}-1),
+                                                                  ({{start_date.day}}));
+
+      document.getElementById('endDate').valueAsDate = new Date({{end_date.year}},
+                                                                  ({{end_date.month}}-1),
+                                                                  ({{end_date.day}}));
     </script>
+    {% else %}
+    <script type="text/javascript">
+      document.getElementById('startDate').valueAsDate = new Date();
+      document.getElementById('endDate').valueAsDate = new Date();
+    </script>
+    {% endif %}
+
+    
   </div>
   <div class="form-group">
     <button type="submit" class="btn btn-primary" input type="submit">Show Graph</button>

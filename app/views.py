@@ -244,51 +244,115 @@ def movie_list():
 
 	return render_template('movie_list.html', movies=movies)
 
-@app.route('/view_income')
+@app.route('/view_income', methods=['GET','POST'])
 @login_required
 def view_income():
 	if current_user.username != 'Owner':
 		flash('You cannot access this site',"danger")
 		return redirect(url_for('home'))
 	else:
-		today = datetime.datetime.today()
-		#Get date of last Monday
-		for i in range(7,0,-1):
-			iterate = today - datetime.timedelta(days=i)
-			day_of_the_week=datetime.datetime.strftime(iterate, '%A')
-			if day_of_the_week=='Monday':
-				chosen_day=iterate
+		if request.method == "POST":
+			choice=0
+			select = request.form.get('selected_blog')
+			if select == "week":
+				choice=1
+				today = datetime.datetime.today()
+				#Get date of last Monday
+				for i in range(7,0,-1):
+					iterate = today - datetime.timedelta(days=i)
+					day_of_the_week=datetime.datetime.strftime(iterate, '%A')
+					if day_of_the_week=='Monday':
+						chosen_day=iterate
+
+				week_ago_days = []
+				day_income=[]
+				tickets = Ticket.query.filter_by().all()
+				#Loop 7 days before chosen date and get total tickets price for each
+				#ticket and add them to a list
+				#Also , add the 7 days' dates to a list
+				total=0
+				for i in range(7,0,-1):
+					d = chosen_day - datetime.timedelta(days=i)
+					date_wo_time = datetime.datetime.strftime(d, '%Y-%m-%d')
+					for ticket in tickets:
+						ticket_time = datetime.datetime.strftime(ticket.time, '%Y-%m-%d')
+						if ticket_time==date_wo_time:
+							total=total+ticket.price
+
+					day_income.append(total)
+					if i==7:
+						week_ago=d
+					week_ago_days.append(d)
+
+				today_date=chosen_day.strftime('%d-%m-%Y')	
+				week_ago=week_ago.strftime('%d-%m-%Y')	
+
+				if week_ago<="21-03-2021"<today_date:
+					print("init")
+				else:
+					print("ooops")
+				return render_template('view_income.html',
+				days_income=day_income,
+				days=week_ago_days,
+				choice=choice)
+			elif select == "overall":
+				choice=2
+				today = datetime.datetime.today().strftime ('%Y-%m-%d')
+				today = datetime.datetime.strptime(today, '%Y-%m-%d')
+				today=today.date()
+				sdate = datetime.date(2021, 3, 1)   # start date
+
+				delta = today - sdate       # as timedelta
+				graph_days=[]
+				for i in range(delta.days + 1):
+					day = sdate + datetime.timedelta(days=i)
+					graph_days.append(day)
+
+				tickets = Ticket.query.filter_by().all()
+				total=0
+				total_income=[]
+				for one_day in graph_days:
+					for ticket in tickets:
+						ticket_time = datetime.datetime.strftime(ticket.time, '%Y-%m-%d')
+						if ticket_time == str(one_day):
+							total=total+ticket.price
+
+					total_income.append(total)
 
 
-		week_ago_days = []
-		day_income=[]
-		tickets = Ticket.query.filter_by().all()
-		#Loop 7 days before chosen date and get total tickets price for each
-		#ticket and add them to a list
-		#Also , add the 7 days' dates to a list
-		for i in range(7,0,-1):
-			d = chosen_day - datetime.timedelta(days=i)
-			date_wo_time = datetime.datetime.strftime(d, '%Y-%m-%d')
-			total=0
+				return render_template('view_income.html',choice=choice,graph_days=graph_days,total_income=total_income)
+			elif select == "movie":
+				choice=3
+				selected_movie = "Movie 1"
+				today = datetime.datetime.today().strftime ('%Y-%m-%d')
+				today = datetime.datetime.strptime(today, '%Y-%m-%d')
+				today=today.date()
+				sdate = datetime.date(2021, 3, 1)   # start date
 
-			for ticket in tickets:
-				ticket_time = datetime.datetime.strftime(ticket.time, '%Y-%m-%d')
-				if ticket_time==date_wo_time:
-					total=total+ticket.price
+				delta = today - sdate       # as timedelta
+				graph_days=[]
+				for i in range(delta.days + 1):
+					day = sdate + datetime.timedelta(days=i)
+					graph_days.append(day)
 
-			day_income.append(total)
-			if i==7:
-				week_ago=d
-			week_ago_days.append(d)
+				tickets = Ticket.query.filter_by().all()
+				total=0
+				total_income=[]
+				for one_day in graph_days:
+					for ticket in tickets:
+						ticket_time = datetime.datetime.strftime(ticket.time, '%Y-%m-%d')
+						if selected_movie==ticket.screen.movie.title:
+							if ticket_time == str(one_day):
+								total=total+ticket.price
 
-		today_date=chosen_day.strftime('%d-%m-%Y')	
-		week_ago=week_ago.strftime('%d-%m-%Y')	
+					total_income.append(total)
 
-		if week_ago<="21-03-2021"<today_date:
-			print("init")
-		else:
-			print("ooops")
-		return render_template('view_income.html',days_income=day_income,days=week_ago_days)
+
+				return render_template('view_income.html',choice=choice,graph_days=graph_days,total_income=total_income)
+			else:
+				flash('Please select a graph to show.',"danger")
+				return redirect(url_for('view_income'))
+		return render_template('view_income.html')
 
 @app.route('/compare_tickets', methods=['GET','POST'])
 @login_required

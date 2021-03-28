@@ -2,43 +2,136 @@
 {% block content %}
 <h1 class="text-center">View income</h1>
 
+
+<form  method="POST" action="">
+  <select class="form-control" id="selected_blog" name="selected_blog">
+    <option value="">Select Graph</option>
+    <option value="week">View Weekly Income</option>
+    <option value="overall">View Overall Income</option>
+    <option value="movie">View Income Per-movie</option>
+</select>
+<br>
+    <button type="submit" class="btn btn-primary">Show Graph</button>
+</form>
+
+
+
   
 <canvas id="myChart"></canvas>
+{% if choice == 1 %}
 <script>
 
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var chart = new Chart(ctx, {
-    
-        type: 'line',
-    
-        data: {
-            labels: [
-              {% for day in days %}
-                "{{day.strftime('%d-%m-%Y')}}",
-              {% endfor %}
-            ],
-            datasets: [{
-                label: 'Weekly Income',
-                borderColor: 'rgb(252, 186, 3)',
-                data: [
-                {% for day_income in days_income %}
-                  {{day_income}},
-                  {% endfor %}
-                ]
-            }]
-        },
-    
-        options: {
-          scales: {
-            yAxes: [{
-                ticks: {
-                    suggestedMax: 10,
-                    min: 0,
-                    stepSize: 5
-                }
-            }]
-          }
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var chart = new Chart(ctx, {
+  
+      type: 'line',
+  
+      data: {
+          labels: [
+            {% for day in days %}
+              "{{day.strftime('%d-%m-%Y')}}",
+            {% endfor %}
+          ],
+          datasets: [{
+              label: 'Weekly Income',
+              borderColor: 'rgb(252, 186, 3)',
+              data: [
+              {% for day_income in days_income %}
+                {{day_income}},
+                {% endfor %}
+              ]
+          }]
+      },
+  
+      options: {
+        scales: {
+          yAxes: [{
+              ticks: {
+                  suggestedMax: 10,
+                  min: 0,
+                  stepSize: 5
+              }
+          }]
         }
-    });
-    </script>
+      }
+  });
+  </script>        
+{% elif choice ==2 %}
+<script>
+
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var chart = new Chart(ctx, {
+  
+      type: 'line',
+  
+      data: {
+          labels: [
+            {% for graph_day in graph_days %}
+              "{{graph_day.strftime('%d-%m-%Y')}}",
+            {% endfor %}
+          ],
+          datasets: [{
+              label: 'Overall Income',
+              borderColor: 'rgb(252, 186, 3)',
+              data: [
+              {% for day_income in total_income %}
+                {{day_income}},
+                {% endfor %}
+              ]
+          }]
+      },
+  
+      options: {
+        scales: {
+          yAxes: [{
+              ticks: {
+                  suggestedMax: 10,
+                  min: 0,
+                  stepSize: 10
+              }
+          }]
+        }
+      }
+  });
+  </script> 
+{% elif choice ==3 %}
+<script>
+
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var chart = new Chart(ctx, {
+  
+      type: 'line',
+  
+      data: {
+          labels: [
+            {% for graph_day in graph_days %}
+              "{{graph_day.strftime('%d-%m-%Y')}}",
+            {% endfor %}
+          ],
+          datasets: [{
+              label: 'Movie Income',
+              borderColor: 'rgb(252, 186, 3)',
+              data: [
+              {% for day_income in total_income %}
+                {{day_income}},
+                {% endfor %}
+              ]
+          }]
+      },
+  
+      options: {
+        scales: {
+          yAxes: [{
+              ticks: {
+                  suggestedMax: 10,
+                  min: 0,
+                  stepSize: 10
+              }
+          }]
+        }
+      }
+  });
+  </script> 
+{%else%}
+{% endif %}
 {% endblock content %}

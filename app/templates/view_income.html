@@ -2,20 +2,49 @@
 {% block content %}
 <h1 class="text-center">View income</h1>
 
+<script>
+  function Graph_choice() {
+  var mylist = document.getElementById("myList");
+  
+  var x = document.getElementById("myDIV");
+  var but = document.getElementById("myBut");
+  if ((myList.value).localeCompare("movie")==0){
+      x.style.display = "block";
+      but.style.display = "none";
+      
+    }
+  else{
+    x.style.display = "none";
+    but.style.display = "block";
+  }
+  }
 
-<form  method="POST" action="">
-  <select class="form-control" id="selected_blog" name="selected_blog">
+  
+  </script>
+
+  <form method="POST" action="" >
+  <select id = "myList" name="myList" onchange = "Graph_choice()" >
     <option value="">Select Graph</option>
     <option value="week">View Weekly Income</option>
     <option value="overall">View Overall Income</option>
-    <option value="movie">View Income Per-movie</option>
-</select>
-<br>
+    <option value="movie" onclick="Movie_choice()">View Income Per-movie</option>
+  </select>
+  <br>
+  <br>
+  <button id="myBut" type="submit" class="btn btn-primary">Show Graph</button>
+  </form>
+
+  <form method="POST" action="" id="myDIV" style="display:none;">
+    <select id = "myMovie" name="myMovie" onchange = "Graph_choice()" >
+      <option value="">Select Movie</option>
+      {% for movie in movies%}
+      <option value="mv {{movie.id}}">{{movie.title}}</option>
+      {% endfor %}
+    </select>
+    <br>
+    <br>
     <button type="submit" class="btn btn-primary">Show Graph</button>
-</form>
-
-
-
+    </form>
   
 <canvas id="myChart"></canvas>
 {% if choice == 1 %}
@@ -55,7 +84,8 @@
         }
       }
   });
-  </script>        
+  </script>  
+        
 {% elif choice ==2 %}
 <script>
 
@@ -109,7 +139,7 @@
             {% endfor %}
           ],
           datasets: [{
-              label: 'Movie Income',
+              label: "{{movie_title}} Income",
               borderColor: 'rgb(252, 186, 3)',
               data: [
               {% for day_income in total_income %}

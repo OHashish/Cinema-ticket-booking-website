@@ -24,55 +24,55 @@ mail = Mail(app)
 
 
 #View model to add IMDB film details into the movies database.
-# class UserView(ModelView):
+class UserView(ModelView):
 
-# 	@expose('/new/', methods=('GET', 'POST'))
-# 	def create_view(self):
-# 		ia = IMDb()
-# 		if request.method == 'POST':
+	@expose('/new/', methods=('GET', 'POST'))
+	def create_view(self):
+		ia = IMDb()
+		if request.method == 'POST':
 
-# 			title = request.form['title']
-# 			movie= ia.search_movie(title)[0]
-# 			ia.update(movie, info = ['main','plot'])
-# 			title=str(movie['title'])
-# 			blurb=str(movie['plot outline'])
-# 			year=int(movie['year'])
+			title = request.form['title']
+			movie= ia.search_movie(title)[0]
+			ia.update(movie, info = ['main','plot'])
+			title=str(movie['title'])
+			blurb=str(movie['plot outline'])
+			year=int(movie['year'])
 
 
-# 			#Finding UK certificate and striping for age only 
-# 			for certificate in movie['certificates']:
-# 				if 'United Kingdom' in certificate:
-# 					certificate = certificate[15:]
-# 					break
+			#Finding UK certificate and striping for age only 
+			for certificate in movie['certificates']:
+				if 'United Kingdom' in certificate:
+					certificate = certificate[15:]
+					break
 
-# 			#Getting first 5 actors for main actors
-# 			actors = ""
-# 			num = 0
-# 			for actor in movie['cast']:
-# 				actors += actor['name'] + ", "
-# 				num += 1
-# 				if num >= 4:
-# 					actors = actors[:-2]
-# 					break
+			#Getting first 5 actors for main actors
+			actors = ""
+			num = 0
+			for actor in movie['cast']:
+				actors += actor['name'] + ", "
+				num += 1
+				if num >= 4:
+					actors = actors[:-2]
+					break
 
-# 			#Formatting director name correctly
-# 			for director in movie['director']:
-# 				director = director['name']
-# 				break
+			#Formatting director name correctly
+			for director in movie['director']:
+				director = director['name']
+				break
 
-# 			movie_poster = movie['cover url']
-# 			runtime = int(movie['runtime'][0])
+			movie_poster = movie['cover url']
+			runtime = int(movie['runtime'][0])
 
-# 			new_movie = Movie(title=title,blurb=blurb,certificate=certificate,
-# 							runtime=runtime,director=director,
-# 							movie_poster=movie_poster,year=year,cast=actors)
+			new_movie = Movie(title=title,blurb=blurb,certificate=certificate,
+							runtime=runtime,director=director,
+							movie_poster=movie_poster,year=year,cast=actors)
 
-# 			db.session.add(new_movie)
-# 			db.session.commit()
+			db.session.add(new_movie)
+			db.session.commit()
 
-# 			return redirect('/admin/movie')
-# 		else:
-# 			return self.render('admin/movie_index.html')
+			return redirect('/admin/movie')
+		else:
+			return self.render('admin/movie_index.html')
 		
 		
 		
@@ -82,7 +82,7 @@ admin.add_view(ModelView(User,db.session))
 admin.add_view(ModelView(Screen,db.session))
 admin.add_view(ModelView(Ticket,db.session))
 admin.add_view(ModelView(Seat,db.session))
-admin.add_view(ModelView(Movie,db.session))
+admin.add_view(UserView(Movie,db.session))
 
 
 
@@ -251,9 +251,27 @@ def view_income():
 		flash('You cannot access this site',"danger")
 		return redirect(url_for('home'))
 	else:
+		movies = Movie.query.filter_by().all()
 		if request.method == "POST":
 			choice=0
-			select = request.form.get('selected_blog')
+			select = request.form.get('myList', None)
+			select_movie = request.form.get('myMovie', None)
+			#Check if a movie was selected
+			#if a movie was not selected display an error message otherwise proceed
+			
+			if select_movie == "":
+					flash('No movie was selected. Please try again.',"danger")
+					return redirect(url_for('view_income'))
+
+			if select_movie:
+				select_movie=select_movie.split()
+
+			#Check if a graph is selected
+			#if a graph was not selected display an error message
+			if select == "":
+					flash('Please select a graph to show.',"danger")
+					return redirect(url_for('view_income'))
+
 			if select == "week":
 				choice=1
 				today = datetime.datetime.today()
@@ -287,14 +305,11 @@ def view_income():
 				today_date=chosen_day.strftime('%d-%m-%Y')	
 				week_ago=week_ago.strftime('%d-%m-%Y')	
 
-				if week_ago<="21-03-2021"<today_date:
-					print("init")
-				else:
-					print("ooops")
 				return render_template('view_income.html',
 				days_income=day_income,
 				days=week_ago_days,
-				choice=choice)
+				choice=choice
+				,movies=movies)
 			elif select == "overall":
 				choice=2
 				today = datetime.datetime.today().strftime ('%Y-%m-%d')
@@ -320,10 +335,12 @@ def view_income():
 					total_income.append(total)
 
 
-				return render_template('view_income.html',choice=choice,graph_days=graph_days,total_income=total_income)
-			elif select == "movie":
+				return render_template('view_income.html',choice=choice,graph_days=graph_days,total_income=total_income,movies=movies)
+			elif select_movie[0] == "mv":
 				choice=3
-				selected_movie = "Movie 1"
+				selected_movie = select_movie[1]
+				selected_movie = Movie.query.filter_by(id=selected_movie).first()
+				movie_title=selected_movie.title
 				today = datetime.datetime.today().strftime ('%Y-%m-%d')
 				today = datetime.datetime.strptime(today, '%Y-%m-%d')
 				today=today.date()
@@ -341,18 +358,18 @@ def view_income():
 				for one_day in graph_days:
 					for ticket in tickets:
 						ticket_time = datetime.datetime.strftime(ticket.time, '%Y-%m-%d')
-						if selected_movie==ticket.screen.movie.title:
+						if selected_movie.title==ticket.screen.movie.title:
 							if ticket_time == str(one_day):
 								total=total+ticket.price
 
 					total_income.append(total)
 
 
-				return render_template('view_income.html',choice=choice,graph_days=graph_days,total_income=total_income)
+				return render_template('view_income.html',choice=choice,graph_days=graph_days,total_income=total_income,movies=movies,movie_title=movie_title)
 			else:
 				flash('Please select a graph to show.',"danger")
 				return redirect(url_for('view_income'))
-		return render_template('view_income.html')
+		return render_template('view_income.html',movies=movies)
 
 @app.route('/compare_tickets', methods=['GET','POST'])
 @login_required

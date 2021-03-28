@@ -263,8 +263,10 @@ def compare_tickets():
 
 		if request.method == "POST":
 			
-			date = request.form['date']
-			date = datetime.strptime(date, '%Y-%m-%d')
+			start_date = request.form['startDate']
+			start_date = datetime.strptime(start_date, '%Y-%m-%d')
+			end_date = request.form['endDate']
+			end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
 			movies = Movie.query.filter_by().all()
 
@@ -274,15 +276,17 @@ def compare_tickets():
 			for movie in movies:
 				value = 0
 				for screen in movie.screen_id:
-					if screen.screen_time > date:
+					if start_date < screen.screen_time < end_date:
 						value += len(screen.tickets)
 					
 				movie_title.append(movie.title)
 				tickets_sold.append(value)
-				
+							
 			return render_template('compare_tickets.html',
 			movies=movie_title,
 			values=tickets_sold,
+			start_date=start_date,
+			end_date=end_date,
 			date_chosen=True)
 
 		else:

@@ -1,7 +1,7 @@
 from flask import render_template, flash,redirect , url_for , request ,session,jsonify, make_response
 from app import app, db, admin,bcrypt
 from .forms import LoginForm , RegisterForm, BookingForm
-from datetime import datetime
+import datetime
 from flask_admin.contrib.sqla import ModelView
 from .models import User,Screen,Ticket,Movie,Seat
 from flask_admin import BaseView, expose
@@ -213,7 +213,7 @@ def logout():
 @app.route('/view_tickets',methods=['GET','POST'])
 def view_tickets():
 	tickets=Ticket.query.filter_by(user_id=current_user.id) # get all tickets of the current user
-	current_time=datetime.now() #get current time to compare it to ticket time
+	current_time=datetime.datetime.now() #get current time to compare it to ticket time
 	return render_template('view_tickets.html',tickets=tickets,current_time=current_time)
 
 @app.route('/ticket/<int:ticket_id>/',methods=['GET','POST'])
@@ -244,14 +244,132 @@ def movie_list():
 
 	return render_template('movie_list.html', movies=movies)
 
-@app.route('/view_income')
+@app.route('/view_income', methods=['GET','POST'])
 @login_required
 def view_income():
 	if current_user.username != 'Owner':
-		flash('Email already in use',"danger")
+		flash('You cannot access this site',"danger")
 		return redirect(url_for('home'))
 	else:
-		return render_template('view_income.html')
+		movies = Movie.query.filter_by().all()
+		if request.method == "POST":
+			choice=0
+			select = request.form.get('myList', None)
+			select_movie = request.form.get('myMovie', None)
+			#Check if a movie was selected
+			#if a movie was not selected display an error message otherwise proceed
+			
+			if select_movie == "":
+					flash('No movie was selected. Please try again.',"danger")
+					return redirect(url_for('view_income'))
+
+			if select_movie:
+				select_movie=select_movie.split()
+
+			#Check if a graph is selected
+			#if a graph was not selected display an error message
+			if select == "":
+					flash('Please select a graph to show.',"danger")
+					return redirect(url_for('view_income'))
+
+			if select == "week":
+				choice=1
+				today = datetime.datetime.today()
+				#Get date of last Monday
+				for i in range(7,0,-1):
+					iterate = today - datetime.timedelta(days=i)
+					day_of_the_week=datetime.datetime.strftime(iterate, '%A')
+					if day_of_the_week=='Monday':
+						chosen_day=iterate
+
+				week_ago_days = []
+				day_income=[]
+				tickets = Ticket.query.filter_by().all()
+				#Loop 7 days before chosen date and get total tickets price for each
+				#ticket and add them to a list
+				#Also , add the 7 days' dates to a list
+				total=0
+				for i in range(7,0,-1):
+					d = chosen_day - datetime.timedelta(days=i)
+					date_wo_time = datetime.datetime.strftime(d, '%Y-%m-%d')
+					for ticket in tickets:
+						ticket_time = datetime.datetime.strftime(ticket.time, '%Y-%m-%d')
+						if ticket_time==date_wo_time:
+							total=total+ticket.price
+
+					day_income.append(total)
+					if i==7:
+						week_ago=d
+					week_ago_days.append(d)
+
+				today_date=chosen_day.strftime('%d-%m-%Y')	
+				week_ago=week_ago.strftime('%d-%m-%Y')	
+
+				return render_template('view_income.html',
+				days_income=day_income,
+				days=week_ago_days,
+				choice=choice
+				,movies=movies)
+			elif select == "overall":
+				choice=2
+				today = datetime.datetime.today().strftime ('%Y-%m-%d')
+				today = datetime.datetime.strptime(today, '%Y-%m-%d')
+				today=today.date()
+				sdate = datetime.date(2021, 3, 1)   # start date
+
+				delta = today - sdate       # as timedelta
+				graph_days=[]
+				for i in range(delta.days + 1):
+					day = sdate + datetime.timedelta(days=i)
+					graph_days.append(day)
+
+				tickets = Ticket.query.filter_by().all()
+				total=0
+				total_income=[]
+				for one_day in graph_days:
+					for ticket in tickets:
+						ticket_time = datetime.datetime.strftime(ticket.time, '%Y-%m-%d')
+						if ticket_time == str(one_day):
+							total=total+ticket.price
+
+					total_income.append(total)
+
+
+				return render_template('view_income.html',choice=choice,graph_days=graph_days,total_income=total_income,movies=movies)
+			elif select_movie[0] == "mv":
+				choice=3
+				selected_movie = select_movie[1]
+				selected_movie = Movie.query.filter_by(id=selected_movie).first()
+				movie_title=selected_movie.title
+				today = datetime.datetime.today().strftime ('%Y-%m-%d')
+				today = datetime.datetime.strptime(today, '%Y-%m-%d')
+				today=today.date()
+				sdate = datetime.date(2021, 3, 1)   # start date
+
+				delta = today - sdate       # as timedelta
+				graph_days=[]
+				for i in range(delta.days + 1):
+					day = sdate + datetime.timedelta(days=i)
+					graph_days.append(day)
+
+				tickets = Ticket.query.filter_by().all()
+				total=0
+				total_income=[]
+				for one_day in graph_days:
+					for ticket in tickets:
+						ticket_time = datetime.datetime.strftime(ticket.time, '%Y-%m-%d')
+						if selected_movie.title==ticket.screen.movie.title:
+							if ticket_time == str(one_day):
+								total=total+ticket.price
+
+					total_income.append(total)
+
+
+				return render_template('view_income.html',choice=choice,graph_days=graph_days,total_income=total_income,movies=movies,movie_title=movie_title)
+			else:
+				flash('Please select a graph to show.',"danger")
+				return redirect(url_for('view_income'))
+		return render_template('view_income.html',movies=movies)
 
 @app.route('/compare_tickets', methods=['GET','POST'])
 @login_required
@@ -320,7 +438,7 @@ def movie_detail(movie_id):
 		for screen in screenings:
 			if i >= 4:
 				break
-			elif screen.screen_time < datetime.now():
+			elif screen.screen_time < datetime.datetime.now():
 				continue
 
 			time = "Screen " + str(screen.number) 

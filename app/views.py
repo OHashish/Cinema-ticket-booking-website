@@ -1,7 +1,7 @@
 from flask import render_template, flash,redirect , url_for , request ,session,jsonify, make_response
 from app import app, db, admin,bcrypt
 from .forms import LoginForm , RegisterForm, BookingForm
-from datetime import datetime
+import datetime
 from flask_admin.contrib.sqla import ModelView
 from .models import User,Screen,Ticket,Movie,Seat
 from flask_admin import BaseView, expose
@@ -24,55 +24,55 @@ mail = Mail(app)
 
 
 #View model to add IMDB film details into the movies database.
-class UserView(ModelView):
+# class UserView(ModelView):
 
-	@expose('/new/', methods=('GET', 'POST'))
-	def create_view(self):
-		ia = IMDb()
-		if request.method == 'POST':
+# 	@expose('/new/', methods=('GET', 'POST'))
+# 	def create_view(self):
+# 		ia = IMDb()
+# 		if request.method == 'POST':
 
-			title = request.form['title']
-			movie= ia.search_movie(title)[0]
-			ia.update(movie, info = ['main','plot'])
-			title=str(movie['title'])
-			blurb=str(movie['plot outline'])
-			year=int(movie['year'])
+# 			title = request.form['title']
+# 			movie= ia.search_movie(title)[0]
+# 			ia.update(movie, info = ['main','plot'])
+# 			title=str(movie['title'])
+# 			blurb=str(movie['plot outline'])
+# 			year=int(movie['year'])
 
 
-			#Finding UK certificate and striping for age only 
-			for certificate in movie['certificates']:
-				if 'United Kingdom' in certificate:
-					certificate = certificate[15:]
-					break
+# 			#Finding UK certificate and striping for age only 
+# 			for certificate in movie['certificates']:
+# 				if 'United Kingdom' in certificate:
+# 					certificate = certificate[15:]
+# 					break
 
-			#Getting first 5 actors for main actors
-			actors = ""
-			num = 0
-			for actor in movie['cast']:
-				actors += actor['name'] + ", "
-				num += 1
-				if num >= 4:
-					actors = actors[:-2]
-					break
+# 			#Getting first 5 actors for main actors
+# 			actors = ""
+# 			num = 0
+# 			for actor in movie['cast']:
+# 				actors += actor['name'] + ", "
+# 				num += 1
+# 				if num >= 4:
+# 					actors = actors[:-2]
+# 					break
 
-			#Formatting director name correctly
-			for director in movie['director']:
-				director = director['name']
-				break
+# 			#Formatting director name correctly
+# 			for director in movie['director']:
+# 				director = director['name']
+# 				break
 
-			movie_poster = movie['cover url']
-			runtime = int(movie['runtime'][0])
+# 			movie_poster = movie['cover url']
+# 			runtime = int(movie['runtime'][0])
 
-			new_movie = Movie(title=title,blurb=blurb,certificate=certificate,
-							runtime=runtime,director=director,
-							movie_poster=movie_poster,year=year,cast=actors)
+# 			new_movie = Movie(title=title,blurb=blurb,certificate=certificate,
+# 							runtime=runtime,director=director,
+# 							movie_poster=movie_poster,year=year,cast=actors)
 
-			db.session.add(new_movie)
-			db.session.commit()
+# 			db.session.add(new_movie)
+# 			db.session.commit()
 
-			return redirect('/admin/movie')
-		else:
-			return self.render('admin/movie_index.html')
+# 			return redirect('/admin/movie')
+# 		else:
+# 			return self.render('admin/movie_index.html')
 		
 		
 		
@@ -82,7 +82,7 @@ admin.add_view(ModelView(User,db.session))
 admin.add_view(ModelView(Screen,db.session))
 admin.add_view(ModelView(Ticket,db.session))
 admin.add_view(ModelView(Seat,db.session))
-admin.add_view(UserView(Movie,db.session))
+admin.add_view(ModelView(Movie,db.session))
 
 
 
@@ -213,7 +213,7 @@ def logout():
 @app.route('/view_tickets',methods=['GET','POST'])
 def view_tickets():
 	tickets=Ticket.query.filter_by(user_id=current_user.id) # get all tickets of the current user
-	current_time=datetime.now() #get current time to compare it to ticket time
+	current_time=datetime.datetime.now() #get current time to compare it to ticket time
 	return render_template('view_tickets.html',tickets=tickets,current_time=current_time)
 
 @app.route('/ticket/<int:ticket_id>/',methods=['GET','POST'])
@@ -248,10 +248,47 @@ def movie_list():
 @login_required
 def view_income():
 	if current_user.username != 'Owner':
-		flash('Email already in use',"danger")
+		flash('You cannot access this site',"danger")
 		return redirect(url_for('home'))
 	else:
-		return render_template('view_income.html')
+		today = datetime.datetime.today()
+		#Get date of last Monday
+		for i in range(7,0,-1):
+			iterate = today - datetime.timedelta(days=i)
+			day_of_the_week=datetime.datetime.strftime(iterate, '%A')
+			if day_of_the_week=='Monday':
+				chosen_day=iterate
+
+
+		week_ago_days = []
+		day_income=[]
+		tickets = Ticket.query.filter_by().all()
+		#Loop 7 days before chosen date and get total tickets price for each
+		#ticket and add them to a list
+		#Also , add the 7 days' dates to a list
+		for i in range(7,0,-1):
+			d = chosen_day - datetime.timedelta(days=i)
+			date_wo_time = datetime.datetime.strftime(d, '%Y-%m-%d')
+			total=0
+
+			for ticket in tickets:
+				ticket_time = datetime.datetime.strftime(ticket.time, '%Y-%m-%d')
+				if ticket_time==date_wo_time:
+					total=total+ticket.price
+
+			day_income.append(total)
+			if i==7:
+				week_ago=d
+			week_ago_days.append(d)
+
+		today_date=chosen_day.strftime('%d-%m-%Y')	
+		week_ago=week_ago.strftime('%d-%m-%Y')	
+
+		if week_ago<="21-03-2021"<today_date:
+			print("init")
+		else:
+			print("ooops")
+		return render_template('view_income.html',days_income=day_income,days=week_ago_days)
 
 @app.route('/compare_tickets', methods=['GET','POST'])
 @login_required
@@ -264,7 +301,7 @@ def compare_tickets():
 		if request.method == "POST":
 			
 			date = request.form['date']
-			date = datetime.strptime(date, '%Y-%m-%d')
+			date = datetime.datetime.strptime(date, '%Y-%m-%d')
 
 			movies = Movie.query.filter_by().all()
 
@@ -316,7 +353,7 @@ def movie_detail(movie_id):
 		for screen in screenings:
 			if i >= 4:
 				break
-			elif screen.screen_time < datetime.now():
+			elif screen.screen_time < datetime.datetime.now():
 				continue
 
 			time = "Screen " + str(screen.number) 

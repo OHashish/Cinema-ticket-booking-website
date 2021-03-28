@@ -1,5 +1,44 @@
 {% extends "base.html" %}
 {% block content %}
 <h1 class="text-center">View income</h1>
+
   
+<canvas id="myChart"></canvas>
+<script>
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+    
+        type: 'line',
+    
+        data: {
+            labels: [
+              {% for day in days %}
+                "{{day.strftime('%d-%m-%Y')}}",
+              {% endfor %}
+            ],
+            datasets: [{
+                label: 'Weekly Income',
+                borderColor: 'rgb(252, 186, 3)',
+                data: [
+                {% for day_income in days_income %}
+                  {{day_income}},
+                  {% endfor %}
+                ]
+            }]
+        },
+    
+        options: {
+          scales: {
+            yAxes: [{
+                ticks: {
+                    suggestedMax: 10,
+                    min: 0,
+                    stepSize: 5
+                }
+            }]
+          }
+        }
+    });
+    </script>
 {% endblock content %}

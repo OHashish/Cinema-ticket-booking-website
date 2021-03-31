@@ -39,7 +39,7 @@ class UserView(ModelView):
 			year=int(movie['year'])
 
 
-			#Finding UK certificate and striping for age only 
+			#Finding UK certificate and striping for age only
 			for certificate in movie['certificates']:
 				if 'United Kingdom' in certificate:
 					certificate = certificate[15:]
@@ -73,9 +73,9 @@ class UserView(ModelView):
 			return redirect('/admin/movie')
 		else:
 			return self.render('admin/movie_index.html')
-		
-		
-		
+
+
+
 
 #Create all admin Views
 admin.add_view(ModelView(User,db.session))
@@ -108,7 +108,7 @@ def payment():
     resp.set_cookie('show_no', show_no)
 
     return resp
-    
+
 @app.route('/stripe_pay', methods=['GET', 'POST'])
 def stripe_pay():
     age = request.cookies.get('venue')
@@ -130,7 +130,7 @@ def stripe_pay():
         cancel_url=url_for('booking', _external=True),
     )
     return {
-        'checkout_session_id': session['id'], 
+        'checkout_session_id': session['id'],
         'checkout_public_key': app.config['STRIPE_PUBLIC_KEY']
     }
 
@@ -155,14 +155,20 @@ def home():
 def availability():
 	return render_template('availability.html')
 
-@app.route('/seats')
+@app.route('/seats', methods=['GET', 'POST'])
 def seats():
+
+	if request.method == 'POST':
+		seats=request.form.get("all")
+		print(seats)
+		title = request.form['something']
+		print(title)
 	return render_template('seats.html')
 
 @app.route('/booking', methods=['GET', 'POST'])
 def booking():
 	form=BookingForm()
-	movies = Movie.query.filter_by().all()	
+	movies = Movie.query.filter_by().all()
 	form.time.choices=[(time.id) for title in Movie.query.filter_by(title='Movie1').all()]
 	return render_template('booking.html', form=form, movies=movies)
 
@@ -236,7 +242,7 @@ def send_email(ticket_id):
 
 
 
-	
+
 @app.route('/movie')
 def movie_list():
 
@@ -265,14 +271,14 @@ def movie_detail(movie_id):
 		screen_list = []
 		i = 0
 		# Creating string to display screening information for
-		# the next 5 screeening of the movie		
+		# the next 5 screeening of the movie
 		for screen in screenings:
 			if i >= 4:
 				break
 			elif screen.screen_time < datetime.now():
 				continue
 
-			time = "Screen " + str(screen.number) 
+			time = "Screen " + str(screen.number)
 			time += " at " + str(screen.screen_time.strftime("%H"))
 			time += ":" + str(screen.screen_time.strftime("%M"))
 			time += " on " + str(screen.screen_time.strftime("%B"))

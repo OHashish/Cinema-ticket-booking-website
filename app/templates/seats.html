@@ -1,5 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
+
+
+
     <h1>Available Seats</h1>
+
+    <div id="container1">
+    </div>
+
+    <div id = "right">
+    <p id= "quantity">
+     Select your seats!
+     </p>
+     <form action="/seats" method="post">
+       <input type="text" name="something" value="Kai">
+       <input type="submit" value="Book" id="book-btn">
+     </form>
+
+
+    </div>
+
+
 
 {% endblock %}

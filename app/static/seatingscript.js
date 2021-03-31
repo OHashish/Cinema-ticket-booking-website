@@ -46,7 +46,16 @@ window.onload = function () {
    }).get();
    console.log(all);
 
-   })
-   console.log("Hello World")
+ });
+
 
 };
+
+function selectClass(){
+  var select = (document.getElementsByClassName("selected"));
+  var spaces=""
+  for(var i = 0; i < select.length; i++){
+    spaces=select[i].innerHTML+","+spaces
+  }
+  document.getElementsByName("something")[0].value=spaces;
+}

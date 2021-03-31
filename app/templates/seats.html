@@ -11,13 +11,16 @@
     <div id = "right">
     <p id= "quantity">
      Select your seats!
+     {{booked}}
      </p>
-     <form action="/seats" method="post">
+     <form action="/seats" method="post" onsubmit="selectClass()">
        <input type="text" name="something" value="Kai">
        <input type="submit" value="Book" id="book-btn">
      </form>
 
-
+     <script type="text/javascript">
+       var a = "{{booked}}"
+     </script>
     </div>
 
 

@@ -157,13 +157,11 @@ def availability():
 
 @app.route('/seats', methods=['GET', 'POST'])
 def seats():
-
+	booked = "1,2,3,4"
 	if request.method == 'POST':
-		seats=request.form.get("all")
-		print(seats)
-		title = request.form['something']
+		title = request.form['something'].split(",")
 		print(title)
-	return render_template('seats.html')
+	return make_response(render_template('seats.html',booked=booked))
 
 @app.route('/booking', methods=['GET', 'POST'])
 def booking():
@@ -264,7 +262,7 @@ def view_income():
 			select_movie = request.form.get('myMovie', None)
 			#Check if a movie was selected
 			#if a movie was not selected display an error message otherwise proceed
-			
+
 			if select_movie == "":
 					flash('No movie was selected. Please try again.',"danger")
 					return redirect(url_for('view_income'))
@@ -308,8 +306,8 @@ def view_income():
 						week_ago=d
 					week_ago_days.append(d)
 
-				today_date=chosen_day.strftime('%d-%m-%Y')	
-				week_ago=week_ago.strftime('%d-%m-%Y')	
+				today_date=chosen_day.strftime('%d-%m-%Y')
+				week_ago=week_ago.strftime('%d-%m-%Y')
 
 				return render_template('view_income.html',
 				days_income=day_income,
@@ -386,7 +384,7 @@ def compare_tickets():
 	else:
 
 		if request.method == "POST":
-			
+
 			start_date = request.form['startDate']
 			start_date = datetime.strptime(start_date, '%Y-%m-%d')
 			end_date = request.form['endDate']
@@ -402,10 +400,10 @@ def compare_tickets():
 				for screen in movie.screen_id:
 					if start_date < screen.screen_time < end_date:
 						value += len(screen.tickets)
-					
+
 				movie_title.append(movie.title)
 				tickets_sold.append(value)
-							
+
 			return render_template('compare_tickets.html',
 			movies=movie_title,
 			values=tickets_sold,

@@ -1,4 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Welcome!! {{current_user.username}}</h1>
+    <div><p></p></div>
+
+    <h3>Currently showing:</h3>
+    <div><p></p></div>
+<div class="listings card-columns">
+	{%for movie in movies %}
+	<a href="/movie/{{movie.id}}"><font color="white">
+  <div class="card text-center bg-dark mb-3">
+    <div class="card-body ">
+      <h5 class="card-title">{{movie.title}}</h5>
+      <img class="card-img-bottom" src="{{movie.movie_poster}}" alt="Card image cap">
+      <p class="card-text" style="overflow: hidden;text-overflow: ellipsis;display: -webkit-box;
+   -webkit-line-clamp: 4;
+   -webkit-box-orient: vertical;">
+	{{movie.blurb}}</p>
+      <p class="card-text"><b><large class="text">{{movie.certificate}}</large></b></p>
+    </div>
+  </div>
+</font>
+</a>
+  {%endfor%}
+  <script type="text/javascript">
+  	window.onload = check();
+
+    function check(){
+      {%if "employee" in current_user.username%}
+        window.location = "/employee";
+      {%endif%}
+    }
+  </script>
+  
+</div>
 {% endblock %}

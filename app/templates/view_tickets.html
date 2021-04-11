@@ -1,24 +1,53 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 class="text-center">My Tickets</h1>
+{% if ticket_length==0%}
+<i><h4 class="text-center" style="margin-top: 15px">No tickets to display.</h4></i>
+{%else%}
+<h1 class="text-center" style="margin-top: 15px">Your tickets:</h1>
+<div class="card-columns">
+    <script type="text/javascript">
+      var seatlist = {{ seatlist|tojson }};
+    </script>
     {% for ticket in tickets%}
-    <div class="form-group">
-        <h6>Bought on {{ticket.time.strftime('%d-%m-%Y')}} at {{ticket.time.strftime('%H:%M %p')}}</h6>
-        <h6>Ticket NO. : {{ticket.id}}</h6>
-        <h6>Screen: {{ticket.screen.id}}</h6>
-        <h6>Movie: {{ticket.screen.movie.title}}</h6>
-        <h6>Price: ${{ticket.price}}</h6>
-        <h6>Type: {{ticket.age_type}}</h6>
-        <h6>Seat: {{ticket.seat.position}}</h6>
+  <div class="card text-center bg-dark mb-3"><font color="white">
+    <div class="card-body">
+        {% if ticket.valid==False%}
+        <font color="red"><h2>### NOT VALID ###</h2></font>
+        {%endif%}
+        {% if ticket.valid==True%}
+        <font color="green"><h2>### VALID ###</h2></font>
+        {%endif%}
+      <h5 class="card-title">Ticket NO : {{ticket.id}}</h5>
+        <p class="card-text">Screen : {{ticket.movie_id}}</p>
+        <p class="card-text">Movie: {{ticket.movie.title}}</p>
+        <p class="card-text">Date : {{ticket.time.strftime('%Y-%m-%d')}}</p>
+        <p class="card-text">Time : {{ticket.time.strftime('%I:%M %p')}}</p>
+        <p class="card-text">Price: £{{ticket.price}}</p>
+        <p class="card-text">Type: {{ticket.age_type}}</p>
+        <p class="card-text">Quantity : {{ticket.quantity}}</p>
+        <p id ="{{ticket.id}}" class="card-text">  </p>
+        <script type="text/javascript">
+            {%for ticket in tickets%}
+            var seats = document.getElementById("{{ticket.id}}");
+            var v = "Seat: ";
+            {%for seat in seats%}
+                {%if seat.ticket_id==ticket.id%}
+                    v+={{seat.position}};
+                    v+=", ";
+                {%endif%}
+            {%endfor%}
+            seats.innerHTML = v.substring(0, v.length-2);
+            {%endfor%}
+
+        </script>
+        <a style="float:left" href="{{ url_for('ticket_pdf', ticket_id=ticket.id) }}">View as PDF</a>
+        <a style="float: right" href="{{ url_for('send_email', ticket_id=ticket.id) }}">Send to email</a>
+        <a></a>
     </div>
-    {% if current_time > ticket.screen.screen_time %}
-    <h5 style = "color:Red;">Expired</h5>
-    {% else %}
-    <nav><a href="{{ url_for('ticket_pdf', ticket_id=ticket.id) }}">View as PDF</a></nav>
-    <nav><a href="{{ url_for('send_email', ticket_id=ticket.id) }}">Send to email</a></nav>
-    <h5 style = "color:Green;" >Available</h5>
-    {% endif %}
-    <hr>
-    {%endfor%}
-    
+  </div></font>
+  {%endfor%}
+  {%endif%}
+
+</div>
+  
 {% endblock content %}

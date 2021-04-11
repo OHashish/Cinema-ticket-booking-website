@@ -7,18 +7,21 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='mainpage.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='seatings.css') }}">
 
   </head>
-  <body>
+  <body style="background-color:#f3bd7d;">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
     <script type=text/javascript src="{{url_for('static', filename='jquery.js') }}"></script>
+    <script type=text/javascript src="{{url_for('static', filename='seatingscript.js') }}"></script>
 
   </body>
 
   <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-    <a class="navbar-brand mr-4" href="/home">Cinema</a>
+    <a href="/home" class="navbar-brand mr-4"><img src=https://cdn1.iconfinder.com/data/icons/app-8/48/325-512.png height="60" weight="60">&nbsp;Home</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -26,13 +29,20 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto nv">
         {% if current_user.is_authenticated %}
+        {% if not "employee" in current_user.username and not current_user.username == 'Owner' %}
         <li class="nav-item"><a class="nav-link" href="/booking">Book Tickets<span class="sr-only">(current)</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="/movie">Movies<span class="sr-only">(current)</span></a></li>
+        {% elif current_user.username == 'Owner' %}
+        <li class="nav-item"><a class="nav-link" href="/view_income">View income<span class="sr-only">(current)</span></a></li>
+        <li class="nav-item"><a class="nav-link" href="/compare_tickets">Compare tickets<span class="sr-only">(current)</span></a></li>
+        {%else%}
+        {% endif %}
         {% endif %}
       </ul>
       <div class="navbar-nav ml-auto nv">
         {% if current_user.is_authenticated %}
+        {% if not "employee" in current_user.username or  not current_user.username != 'Owner' %}
         <li class="nav-item"><a class="nav-link" href="/view_tickets">My Tickets<span class="sr-only">(current)</span></a></li>
+        {%endif%}
         <li class="nav-item"><a class="nav-link" href="/logout">Logout<span class="sr-only">(current)</span></a></li>
         {% else %}
         <li class="nav-item"><a class="nav-link" href="/signup">Sign up<span class="sr-only">(current)</span></a></li>

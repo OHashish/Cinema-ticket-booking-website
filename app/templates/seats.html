@@ -1,5 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Available Seats</h1>
+
+
+
+    <h3 style="margin-top: 20px;">Select your seats:</h3>
+    <i><h5 style="text-align: center; margin-bottom: 15px;"> Screen</h5></i>
+    <script type="text/javascript">
+   	    var bookedSeats = {{ booked|tojson }};
+   	    var quant = {{quantity}};
+    </script>
+    <div style="padding-left: 7px; padding-top: 7px; padding-right: 7px; padding-bottom: 7px;" class="card bg-dark text-white" id="container1">
+    </div>
+
+    <div id = "right">
+    {% if cc==('cash')%}
+     <form align="center" action="/reservation" method="post" onsubmit="selectClass()" name="seats">
+     {%elif cc==('emp')%}
+     <form align="center" action="/emplybook" method="post" onsubmit="selectClass()" name="seats">
+     {%else%}
+     <form align="center" action="/thanks" method="post" onsubmit="selectClass()" name="seats">
+     {%endif%}
+       <input id="hide" type="text" name="something" value="Kai">
+       <input type="submit" value="Book" id="book-btn" class="btn btn-primary" style="margin-top: 15px; margin-bottom: 15px;">
+     </form>
+
+     <script type="text/javascript">
+       var a = "{{booked}}"
+     </script>
+    </div>
+
+
 
 {% endblock %}

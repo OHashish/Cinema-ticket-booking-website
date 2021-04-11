@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
+<font color="white">
+<div class="jumbotron bg-dark" style="padding-top: 15px; margin-top: 20px;">
     <div class="content-section">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
@@ -69,4 +71,6 @@
             Already Have An Account? <a class="ml-2" href="{{ url_for('login') }}">Sign In</a>
         </small>
     </div>
+</div>
+</font>
 {% endblock content %}

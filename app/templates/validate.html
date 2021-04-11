@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div align=center>
+</div>
+
+  <body>
+    <script type="text/javascript">
+      var tick_ids = {{ tick_ids|tojson }};
+    </script>
+  <script src="{{ url_for('static', filename='booking.js') }}"></script>
+  <div class="mdl-layout__drawer">
+    <h1></h1>
+    <p></p>
+    <p></p>
+  </div>
+
+  <div align=center >
+   <div class="card bg-dark text-white" style="width: 30rem;" align=center>
+     <div class="card-body">
+        <div class="form-group">
+        <form action="/print" method="POST">
+    <label for="exampleFormControlSelect1">Select Ticket No:</label>
+
+    <select class="form-control" id="exampleFormControlSelect1" name="ticketselect" required>
+      {% for id in tick_ids %}
+      <option value="{{id}}">{{id}}</option>
+      {% endfor %}
+    </select>
+  </div>
+       <button type="submit" class="btn btn-primary" input type="submit">Continue</button>
+
+      </form>
+  </div>
+  </div>
+</div>
+</div><!-- Your content goes here --></div>
+  </main>
+</div>
+
+{% endblock %}

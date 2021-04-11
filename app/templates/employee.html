@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<head>   
+</head>
+  <body>
+    <div class="flex-container" align=center>
+      <div class="flex-child poster">
+        <h3 style="margin-bottom: 20px; margin-top: 20px;">Select option:</h3>
+        <button type="submit" class="btn btn-primary btn-lg" input type="submit" onclick="valid()">Validate Ticket</button>
+        <button type="submit" class="btn btn-primary btn-lg" input type="submit" onclick="book()">Make new booking</button>
+
+      </div>
+      <script type="text/javascript">
+    window.onload = check();
+
+    function valid(){
+        window.location = "/validate";      
+    }
+     function book(){
+        window.location = "/booking";      
+    }
+  </script>
+
+    </div> <!-- /container -->
+{% endblock %}

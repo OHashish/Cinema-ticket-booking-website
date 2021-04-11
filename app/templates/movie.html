@@ -1,8 +1,10 @@
 {%extends "base.html"%}
 {% block content %}
 {{super()}}
+<font color="white">
+<div class="jumbotron bg-dark" style="padding-top: 15px; margin-top: 25px;">
 <header>
-    <div class="Titleinfo">
+    <div class="container">
         <h1>{{title}}  <i><span style="font-size:50%">({{year}})</span></i></h1>
     </div>
 </header>
@@ -45,17 +47,9 @@
             </div>
         </dt>
         <dt>
-            <div id=screen>
-                <h3 style="font-size: 125%;">
-                    <span style="font-weight:bold">Next Screenings:&nbsp<br></span>
-                    {% for screening in screenings %}
-                        <i>{{screening}}</i><br>
-                    {% endfor %}
-                </h3> 
-            </div>
-        </dt>
+            </dt>
         <dt>
-            <div id=booking style="padding-top:5px;">
+            <div id=booking style="padding-top:20px;">
                 <form action="/book/{{id}}" method="POST">
                     <button class="btn btn-primary" name="book_button" type="submit" value="book">
                         Book a screening</button>
@@ -65,7 +59,7 @@
     </dl>
 
 
-    <div id=description style="padding-top:50px;">
+    <div id=description style="padding-top:20px;">
         <h3 style="font-size: 125%;">
             <span style="font-weight:bold">Synopsis:&nbsp</span>
             <i>{{blurb}}&nbsp</i>
@@ -73,5 +67,7 @@
     </div>
 
 </main>
+</div>
+</font>
 
 {% endblock content %}

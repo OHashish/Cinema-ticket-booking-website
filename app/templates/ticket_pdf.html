@@ -1,11 +1,19 @@
-<div class="form-group">
-    <h6>Bought on {{ticket.time.strftime('%d-%m-%Y')}} at {{ticket.time.strftime('%H:%M %p')}}</h6>
-    <h6>Ticket NO. : {{ticket.id}}</h6>
-    <h6>Screen: {{ticket.screen.id}}</h6>
-    <h6>Movie: {{ticket.screen.movie.title}}</h6>
-    <h6>Price: ${{ticket.price}}</h6>
-    <h6>Type: {{ticket.age_type}}</h6>
-    <h6>Seat: {{ticket.seat.position}}</h6>
+<div >
+	{% if ticket.valid==False%}
+        <font color="red"><h2>### NOT VALID ###</h2></font>
+        {%endif%}
+        {% if ticket.valid==True%}
+        <font color="green"><h2>### VALID ###</h2></font>
+        {%endif%}
+    <h5 class="card-title">Ticket NO : {{ticket.id}}</h5>
+    <p>Screen : {{ticket.movie_id}}</p>
+    <p >Movie: {{ticket.movie.title}}</p>
+    <p >Date : {{ticket.time.strftime('%Y-%m-%d')}}</p>
+    <p >Time : {{ticket.time.strftime('%I:%M %p')}}</p>
+    <p >Price: £{{ticket.price}}</p>
+    <p >Type: {{ticket.age_type}}</p>
+    <p >Quantity : {{ticket.quantity}}</p>
+    <p >{{seats}}  </p>
 </div>
 
 

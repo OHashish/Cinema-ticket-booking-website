@@ -494,8 +494,8 @@ def view_income():
 					date_wo_time = datetime.datetime.strftime(d, '%Y-%m-%d')
 					for ticket in tickets:
 						ticket_time = datetime.datetime.strftime(ticket.time, '%Y-%m-%d')
-						if ticket_time==date_wo_time:
-							total=total+int(float(ticket.price))
+						if ticket_time==date_wo_time and ticket.valid==True:
+							total=total+int(float(ticket.price)*ticket.quantity)
 
 					day_income.append(total)
 					if i==7:
@@ -529,8 +529,8 @@ def view_income():
 				for one_day in graph_days:
 					for ticket in tickets:
 						ticket_time = datetime.datetime.strftime(ticket.time, '%Y-%m-%d')
-						if ticket_time == str(one_day):
-							total=total+int(float(ticket.price))
+						if ticket_time == str(one_day) and ticket.valid==True:
+							total=total+int(float(ticket.price)*ticket.quantity)
 
 					total_income.append(total)
 
